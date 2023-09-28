@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto"
 	"net/http"
 	"time"
 )
@@ -32,6 +33,7 @@ type CreateAccountRequest struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 type Account struct {
@@ -39,28 +41,30 @@ type Account struct {
 	FirstName  string    `json:"firstName"`
 	LastName   string    `json:"lastName"`
 	Email      string    `json:"email"`
+	Password   []byte    `json:"password"`
 	Token      string    `json:"token"`
 	Role       string    `json:"role"`
 	CreatedAt  time.Time `json:"createdAt"`
 	ModifiedAt time.Time `json:"modifiedAt"`
 }
 
-func NewAccount(firstName, lastName, email string) *Account {
+func NewAccount(firstName, lastName, email, password string) *Account {
 	return &Account{
 		FirstName:  firstName,
 		LastName:   lastName,
 		Email:      email,
+		Password:   crypto.SHA256.New().Sum([]byte(password)),
 		Role:       "USER",
 		CreatedAt:  time.Now().UTC(),
 		ModifiedAt: time.Now().UTC(),
 	}
 }
 
-func NewAdminAccount(firstName, lastName, email string) *Account {
-	account := NewAccount(firstName, lastName, email)
-	account.Role = "ADMIN"
-	return account
-}
+// func NewAdminAccount(firstName, lastName, email string) *Account {
+// 	account := NewAccount(firstName, lastName, email)
+// 	account.Role = "ADMIN"
+// 	return account
+// }
 
 type Product struct {
 	ID          int       `json:"id"`
@@ -84,6 +88,6 @@ func NewProduct(title, description string, price, accountID int) *Product {
 }
 
 type Login struct {
-	Email string `json:"email"`
-	// Password string `json:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }

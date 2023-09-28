@@ -1,13 +1,12 @@
 import { Form, Link } from "@remix-run/react";
 import { redirect, type ActionFunction } from "@remix-run/node";
 import { styles } from "~/common/styles";
-import React from "react";
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
 
-  if (!body.get("email")) {
-    throw new Response("Missing email", {
+  if (!body.get("email") || !body.get("password")) {
+    throw new Response("Missing email or password", {
       status: 400,
       headers: {
         "Content-Type": "text/html",
@@ -18,12 +17,13 @@ export const action: ActionFunction = async ({ request }) => {
     method: "POST",
     body: JSON.stringify({
       email: body.get("email"),
+      password: body.get("password"),
     }),
   });
 
   if (response.status !== 200) {
-    throw new Response("Something went wrong", {
-      status: 500,
+    throw new Response(JSON.stringify(response), {
+      status: response.status,
       headers: {
         "Content-Type": "text/html",
       },
@@ -68,7 +68,7 @@ export default function Login() {
           <input
             type="password"
             className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
-            // name="password"
+            name="password"
             placeholder="Password..."
           />
           <div className="flex justify-center text-white/80 text-lg">

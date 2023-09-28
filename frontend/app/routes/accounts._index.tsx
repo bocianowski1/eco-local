@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { styles } from "~/common/styles";
 import { type Account } from "~/common/types";
-// import useAuth from "~/hooks/useAuth";
 
 export const loader = async () => {
   const res = await fetch("http://localhost:8080/api/accounts");
@@ -18,7 +18,7 @@ export default function Accounts() {
         (accounts.length === 0 && (
           <div>
             <p className="">No accounts found.</p>
-            <Link className="text-green-500 hover:underline" to="/login">
+            <Link className={styles.link} to="/login">
               Login
             </Link>
           </div>

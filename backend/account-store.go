@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 )
@@ -13,6 +14,7 @@ func (s *PostgresStore) createAccountTable() error {
 		first_name varchar(255),
 		last_name varchar(255),
 		email varchar(255),
+		password bytea,
 		token varchar(255),
 		role varchar(10),
 		created_at timestamp,
@@ -25,19 +27,25 @@ func (s *PostgresStore) createAccountTable() error {
 
 func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
 	query := `insert into account 
-	(first_name, last_name, email, token, role, created_at, modified_at)
-	values ($1, $2, $3, $4, $5, $6, $7)`
+	(first_name, last_name, email, password, token, role, created_at, modified_at)
+	values ($1, $2, $3, $4, $5, $6, $7, $8)`
 
 	_, err := s.db.Query(
 		query,
 		acc.FirstName,
 		acc.LastName,
 		acc.Email,
+		acc.Password,
 		acc.Token,
 		acc.Role,
 		acc.CreatedAt,
 		acc.ModifiedAt,
 	)
+
+	if err != nil {
+		log.Println("Error creating account:", err)
+		return 0, err
+	}
 
 	rows, err := s.db.Query("select id from account where email = $1", acc.Email)
 	if err != nil {
@@ -46,7 +54,9 @@ func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
 
 	defer rows.Close()
 
+	i := 0
 	for rows.Next() {
+		i++
 		var id int
 		err := rows.Scan(&id)
 		if err != nil {
@@ -55,6 +65,11 @@ func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
 
 		return id, nil
 	}
+
+	// if i == 0 {
+	// 	log.Println("Eh")
+	// 	return 1, nil
+	// }
 
 	return 0, fmt.Errorf("Account with email %v not found", acc.Email)
 }
@@ -83,7 +98,7 @@ func (s *PostgresStore) GetAccountByID(id int) (*Account, error) {
 }
 
 func (s *PostgresStore) GetAccount() ([]*Account, error) {
-	rows, err := s.db.Query("select * from account")
+	rows, err := s.db.Query(`select * from account`)
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +158,7 @@ func scanIntoAccount(rows *sql.Rows) (*Account, error) {
 		&acc.FirstName,
 		&acc.LastName,
 		&acc.Email,
+		&acc.Password,
 		&acc.Token,
 		&acc.Role,
 		&acc.CreatedAt,

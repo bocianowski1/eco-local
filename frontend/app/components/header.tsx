@@ -11,8 +11,8 @@ export function Header() {
   const id = user?.id;
   return (
     <header
-      className="sticky top-0 left-0 right-0 flex justify-between items-center bg-white z-50
-                        mb-16 pt-12 pb-6 border-b border-black/80 lg:px-0"
+      className={`sticky top-0 left-0 right-0 flex justify-between items-center bg-white z-50
+                        mb-16 pt-12 pb-6 border-b border-black/80 lg:px-0`}
     >
       <AnimatePresence>
         {showCart && (
@@ -54,16 +54,15 @@ export function Header() {
           onMouseEnter={() => setShowCart(true)}
           onMouseLeave={() => setShowCart(false)}
         >
-          {cart && (
-            <div
-              onMouseEnter={() => setShowCart(true)}
-              onMouseLeave={() => setShowCart(false)}
-              className="absolute -top-2 -right-6 h-6 w-6 p-[0.5] rounded-full bg-white 
+          <div
+            onMouseEnter={() => setShowCart(true)}
+            onMouseLeave={() => setShowCart(false)}
+            className="absolute -top-2 -right-6 h-6 w-6 p-[0.5] rounded-full bg-white 
                           border-2 border-black/80 text-sm flex items-center justify-center group-hover:cursor-pointer"
-            >
-              {cart.products.length}
-            </div>
-          )}
+          >
+            {cart ? cart.products.length : 0}
+          </div>
+
           <Link to="/cart" className={styles.link}>
             Cart
           </Link>

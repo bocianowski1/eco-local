@@ -73,7 +73,7 @@ func (s *APIServer) HandleCreateAccount(w http.ResponseWriter, r *http.Request) 
 	}
 	defer r.Body.Close()
 
-	account := NewAccount(createAccReq.FirstName, createAccReq.LastName, createAccReq.Email)
+	account := NewAccount(createAccReq.FirstName, createAccReq.LastName, createAccReq.Email, createAccReq.Password)
 
 	tokenString, err := createJWT(account)
 	if err != nil {
@@ -85,6 +85,10 @@ func (s *APIServer) HandleCreateAccount(w http.ResponseWriter, r *http.Request) 
 	id, err := s.store.CreateAccount(account)
 	if err != nil {
 		return err
+	}
+
+	if id == 1 {
+		return WriteJSON(w, http.StatusCreated, account)
 	}
 
 	updatedAccount, err := s.store.GetAccountByID(id)

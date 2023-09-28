@@ -54,7 +54,7 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body>
-        <Layout isError>
+        <Layout>
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
               Error{" "}
@@ -75,13 +75,7 @@ export function ErrorBoundary() {
   );
 }
 
-export function Layout({
-  children,
-  isError,
-}: {
-  children: React.ReactNode;
-  isError?: boolean;
-}) {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
