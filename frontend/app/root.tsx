@@ -1,6 +1,7 @@
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "../tailwind.css";
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -11,6 +12,8 @@ import {
 } from "@remix-run/react";
 import { Header } from "./components/";
 import { AuthProvider } from "./hooks/useAuth";
+import { styles } from "./common/styles";
+import { type HTTPError } from "./common/types";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -40,8 +43,9 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
-  const error = useRouteError();
-  console.error(error);
+  let error = useRouteError() as HTTPError;
+  console.error("ERROR:", error);
+
   return (
     <html>
       <head>
@@ -50,14 +54,34 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body>
-        {/* add the UI you want your users to see */}
-        <Scripts />
+        <Layout isError>
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              Error{" "}
+              <span className="font-light text-lg">({error.statusText})</span>
+            </h2>
+            <div className="flex gap-2">
+              <h3>Why?</h3>
+              <p>{error.data}</p>
+            </div>
+            <Link to="/" className={styles.link}>
+              Home
+            </Link>
+          </div>
+          <Scripts />
+        </Layout>
       </body>
     </html>
   );
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({
+  children,
+  isError,
+}: {
+  children: React.ReactNode;
+  isError?: boolean;
+}) {
   return (
     <>
       <Header />

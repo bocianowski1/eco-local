@@ -19,13 +19,9 @@ export type Cart = {
   products: Product[];
 };
 
-export type Order = {
-  id: number;
-  accountId: number;
-  productId: number;
-  quantity: number;
-  total: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
+export type HTTPError = {
+  status: number;
+  statusText: string;
+  internal?: boolean;
+  data?: string;
 };
