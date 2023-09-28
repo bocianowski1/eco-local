@@ -6,9 +6,25 @@ import { useEffect, useState } from "react";
 import { styles } from "~/common/styles";
 import type { Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
+import { Settings } from "~/components";
 
-export const action: ActionFunction = async () => {
-  return redirect("/");
+export const action: ActionFunction = async ({ request }) => {
+  switch (request.method) {
+    // case "POST": {
+    //   return redirect("/");
+    // }
+    case "PUT": {
+      return redirect("/accounts");
+    }
+    default: {
+      return new Response("Method not allowed", {
+        status: 405,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      });
+    }
+  }
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
@@ -101,14 +117,17 @@ export default function AccountsID() {
     <div className="flex justify-between items-center">
       <div className="flex flex-col gap-8 w-full">
         <section className="flex justify-between">
-          <h1 className="font-bold text-4xl">
-            {account.firstName} {account.lastName}
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="font-bold text-4xl">
+              {account.firstName} {account.lastName}
+            </h1>
+            <p className="font-thin">{account.email}</p>
+          </div>
           <button
-            className="bg-primary font-medium rounded-sm text-white px-6 py-3 hover:bg-accent transition-colors duration-200"
+            className="h-fit w-fit"
             onClick={() => setShowSettings((s) => !s)}
           >
-            Settings
+            <Settings />
           </button>
         </section>
         <section className="">
@@ -123,7 +142,7 @@ export default function AccountsID() {
             </div>
           ) : (
             <div>
-              <p>You have no products :(</p>
+              <p>You have no products {":("}</p>
               <Link to="/products/new" className={styles.link}>
                 Create a new product!
               </Link>
@@ -146,8 +165,11 @@ export default function AccountsID() {
             onMouseLeave={() => setShowSettings(false)}
           >
             <div className="flex flex-col items-start gap-4">
-              <Form action={`/accounts/${account.id}`} method="POST">
-                <button onClick={signOut}>Sign out</button>
+              <Link to="/" onClick={signOut} className={styles.link}>
+                Sign out
+              </Link>
+              <Form action={`/accounts/${account.id}`} method="PUT">
+                <button>Edit account</button>
               </Form>
             </div>
           </motion.div>

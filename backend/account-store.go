@@ -12,11 +12,11 @@ func (s *PostgresStore) createAccountTable() error {
 		id serial primary key,
 		first_name varchar(255),
 		last_name varchar(255),
-		number serial,
-		balance serial,
+		email varchar(255),
 		token varchar(255),
 		role varchar(10),
-		created_at timestamp
+		created_at timestamp,
+		modified_at timestamp
 	)`
 
 	_, err := s.db.Exec(query)
@@ -25,20 +25,21 @@ func (s *PostgresStore) createAccountTable() error {
 
 func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
 	query := `insert into account 
-	(first_name, last_name, number, balance, token, role, created_at)
+	(first_name, last_name, email, token, role, created_at, modified_at)
 	values ($1, $2, $3, $4, $5, $6, $7)`
 
 	_, err := s.db.Query(
 		query,
 		acc.FirstName,
 		acc.LastName,
-		acc.Number,
-		acc.Balance,
+		acc.Email,
 		acc.Token,
 		acc.Role,
-		acc.CreatedAt)
+		acc.CreatedAt,
+		acc.ModifiedAt,
+	)
 
-	rows, err := s.db.Query("select id from account where number = $1", acc.Number)
+	rows, err := s.db.Query("select id from account where email = $1", acc.Email)
 	if err != nil {
 		return 0, err
 	}
@@ -55,7 +56,7 @@ func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
 		return id, nil
 	}
 
-	return 0, fmt.Errorf("Account with number %v not found", acc.Number)
+	return 0, fmt.Errorf("Account with email %v not found", acc.Email)
 }
 
 func (s *PostgresStore) UpdateAccount(acc *Account) error {
@@ -121,17 +122,31 @@ func (s *PostgresStore) GetAccountProducts(id int) ([]*Product, error) {
 	return products, nil
 }
 
+func (s *PostgresStore) GetAccountByEmail(email string) (*Account, error) {
+	rows, err := s.db.Query("select * from account where email = $1", email)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		return scanIntoAccount(rows)
+	}
+	return nil, fmt.Errorf("Account with email %v not found", email)
+}
+
 func scanIntoAccount(rows *sql.Rows) (*Account, error) {
 	acc := &Account{}
 	err := rows.Scan(
 		&acc.ID,
 		&acc.FirstName,
 		&acc.LastName,
-		&acc.Number,
-		&acc.Balance,
+		&acc.Email,
 		&acc.Token,
 		&acc.Role,
 		&acc.CreatedAt,
+		&acc.ModifiedAt,
 	)
 
 	return acc, err

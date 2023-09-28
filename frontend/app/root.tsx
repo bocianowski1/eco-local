@@ -7,6 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteError,
 } from "@remix-run/react";
 import { Header } from "./components/";
 import { AuthProvider } from "./hooks/useAuth";
@@ -38,12 +39,21 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
   return (
-    <div>
-      <h1>Application Error :=O</h1>
-      <pre>{error.message}</pre>
-    </div>
+    <html>
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {/* add the UI you want your users to see */}
+        <Scripts />
+      </body>
+    </html>
   );
 }
 

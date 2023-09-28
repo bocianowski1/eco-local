@@ -73,7 +73,7 @@ func (s *APIServer) HandleCreateAccount(w http.ResponseWriter, r *http.Request) 
 	}
 	defer r.Body.Close()
 
-	account := NewAccount(createAccReq.FirstName, createAccReq.LastName)
+	account := NewAccount(createAccReq.FirstName, createAccReq.LastName, createAccReq.Email)
 
 	tokenString, err := createJWT(account)
 	if err != nil {

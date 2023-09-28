@@ -46,12 +46,18 @@ func withJWTAuth(handlerFunc http.HandlerFunc, s Storager) http.HandlerFunc {
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
-		claimsAccountNumber := int64(claims["account_number"].(float64))
-		if account.Number != claimsAccountNumber {
-			log.Println("Account number mismatch", account.Number, claimsAccountNumber)
+		claimsEmail := claims["email"].(string)
+		if account.Email != claimsEmail {
+			log.Println("Account number mismatch", account.Email, claimsEmail)
 			permissionDenied(w)
 			return
 		}
+		// claimsAccountNumber := int64(claims["account_number"].(float64))
+		// if account.Number != claimsAccountNumber {
+		// 	log.Println("Account number mismatch", account.Number, claimsAccountNumber)
+		// 	permissionDenied(w)
+		// 	return
+		// }
 
 		handlerFunc(w, r)
 	}
@@ -70,8 +76,8 @@ func validateJWT(tokenString string) (*jwt.Token, error) {
 
 func createJWT(account *Account) (string, error) {
 	claims := jwt.MapClaims{
-		"expires_at":     time.Now().Add(time.Hour * 24).Unix(),
-		"account_number": account.Number,
+		"expires_at": time.Now().Add(time.Hour * 24).Unix(),
+		"email":      account.Email,
 	}
 
 	secret := os.Getenv("JWT_SECRET")

@@ -28,5 +28,6 @@ func main() {
 		{"/api/accounts/{id}/products", withJWTAuth(makeHTTPHandleFunc(server.HandleAccountProducts), server.store)},
 		{"/api/products", makeHTTPHandleFunc(server.HandleProduct)},
 		{"/api/products/{id}", makeHTTPHandleFunc(server.HandleProductByID)},
+		{"/api/login", makeHTTPHandleFunc(server.HandleLogin)},
 	})
 }

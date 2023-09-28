@@ -13,6 +13,7 @@ type Storager interface {
 	GetAccount() ([]*Account, error)
 	GetAccountByID(int) (*Account, error)
 	GetAccountProducts(int) ([]*Product, error)
+	GetAccountByEmail(string) (*Account, error)
 
 	// Product
 	CreateProduct(*Product) error
