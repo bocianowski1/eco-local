@@ -12,6 +12,7 @@ type Storager interface {
 	DeleteAccount(int) error
 	GetAccount() ([]*Account, error)
 	GetAccountByID(int) (*Account, error)
+	GetAccountProducts(int) ([]*Product, error)
 
 	// Product
 	CreateProduct(*Product) error

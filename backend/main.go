@@ -25,6 +25,7 @@ func main() {
 	server.Run([]RouteHandlerPair{
 		{"/api/accounts", makeHTTPHandleFunc(server.HandleAccount)},
 		{"/api/accounts/{id}", withJWTAuth(makeHTTPHandleFunc(server.HandleAccountByID), server.store)},
+		{"/api/accounts/{id}/products", withJWTAuth(makeHTTPHandleFunc(server.HandleAccountProducts), server.store)},
 		{"/api/products", makeHTTPHandleFunc(server.HandleProduct)},
 		{"/api/products/{id}", makeHTTPHandleFunc(server.HandleProductByID)},
 	})

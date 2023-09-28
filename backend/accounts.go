@@ -100,3 +100,17 @@ func (s *APIServer) HandleCreateAccount(w http.ResponseWriter, r *http.Request) 
 
 	return WriteJSON(w, http.StatusCreated, updatedAccount)
 }
+
+func (s *APIServer) HandleAccountProducts(w http.ResponseWriter, r *http.Request) error {
+	id, err := getID(r)
+	if err != nil {
+		return err
+	}
+
+	products, err := s.store.GetAccountProducts(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, products)
+}

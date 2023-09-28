@@ -101,6 +101,26 @@ func (s *PostgresStore) GetAccount() ([]*Account, error) {
 	return accounts, nil
 }
 
+func (s *PostgresStore) GetAccountProducts(id int) ([]*Product, error) {
+	rows, err := s.db.Query("select * from product where account_id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	products := []*Product{}
+	for rows.Next() {
+		prod, err := scanIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, prod)
+	}
+
+	return products, nil
+}
+
 func scanIntoAccount(rows *sql.Rows) (*Account, error) {
 	acc := &Account{}
 	err := rows.Scan(
