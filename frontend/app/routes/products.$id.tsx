@@ -1,11 +1,14 @@
 import { redirect, json } from "@remix-run/node";
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, useLoaderData, useParams } from "@remix-run/react";
+import { Form, Link, useLoaderData, useParams } from "@remix-run/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { type Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
 import iPhone from "../../public/images/iPhone.png";
+import { styles } from "~/common/styles";
+import { kr } from "~/common/utils";
+// import { kr } from "~/common/utils";
 
 export const action: ActionFunction = async ({ request }) => {
   const id = request.url.split("/").pop();
@@ -63,16 +66,16 @@ export default function ProductsID() {
       <div className="h-[36rem] rounded-sm">
         <img src={iPhone} alt="" className="w-full h-full object-contain" />
       </div>
-      <div className="flex flex-col p-4 w-2/5 max-h-[22rem] rounded-sm border border-black/80">
+      <div className="flex flex-col p-4 w-2/5 max-h-[28rem] border border-black/80 rounded-sm">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-4xl">{product.title}</h2>
           <div>
             {user && `${user.id}` === `${product.accountId}` && (
-              <>
+              <div className="flex justify-end">
                 <button
                   onClick={() => setShowModal((s) => !s)}
                   onBlur={() => setShowModal(false)}
-                  className="pr-1 font-medium text-primary hover:underline transition-all duration-200"
+                  className={styles.link}
                 >
                   Edit
                 </button>
@@ -101,9 +104,9 @@ export default function ProductsID() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </>
+              </div>
             )}
-            <p>{product.price},-</p>
+            <p>{kr(product.price)}</p>
           </div>
         </div>
         <div className="flex flex-col mt-4">
@@ -111,20 +114,48 @@ export default function ProductsID() {
           <p className="">{product.description}</p>
         </div>
         <div className="mt-auto">
-          {cart && (
+          <section className="flex justify-between items-end pb-2">
             <p className="font-light text-sm">
               You have{" "}
               {cart.products.filter((p: Product) => p.id === product.id).length}{" "}
               {product.title}'s in your cart.
             </p>
-          )}
-          <button
-            className="font-medium mt-2 text-lg w-full flex justify-center py-3 rounded-sm
-                      bg-primary text-white hover:bg-accent transition-colors duration-200"
-            onClick={() => editCart(product)}
-          >
-            Add to cart
-          </button>
+            <div className="flex gap-4 items-center pb-2">
+              <button
+                className="px-3 py-1 bg-primary rounded-full text-white hover:bg-primary/80 transition-colors duration-200"
+                onClick={() => editCart(product, true)}
+              >
+                -
+              </button>
+              <span className="text-lg">
+                {
+                  cart.products.filter((p: Product) => p.id === product.id)
+                    .length
+                }{" "}
+              </span>
+              <button
+                className="px-3 py-1 bg-primary rounded-full text-white hover:bg-primary/80 transition-colors duration-200"
+                onClick={() => editCart(product)}
+              >
+                +
+              </button>
+            </div>
+          </section>
+          <section className="flex flex-col gap-2">
+            <button
+              className={styles.submitButtonLarge}
+              onClick={() => editCart(product)}
+            >
+              Add to cart
+            </button>
+            <Link
+              to="/cart"
+              className="bg-white border border-black/80 text-primary text-center font-medium h-fit w-full rounded-sm text-lg px-12 py-3 
+                        hover:bg-primary hover:text-white transition-colors duration-300"
+            >
+              Buy now
+            </Link>
+          </section>
         </div>
       </div>
     </div>

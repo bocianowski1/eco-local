@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import type { Product } from "~/common/types";
-import { uniqueProducts, countProducts } from "~/common/utils";
+import { uniqueProducts, countProducts, kr } from "~/common/utils";
 import useAuth from "~/hooks/useAuth";
 import { AnimatePresence, motion } from "framer-motion";
 import iPhone from "../../public/images/iPhone.png";
@@ -87,7 +87,7 @@ export default function Cart() {
                         +
                       </button>
                     </div>
-                    <p className="text-primary ml-auto">{p.price},-</p>
+                    <p className="text-primary ml-auto">{kr(p.price)}</p>
                   </div>
                 </motion.div>
               ))}
@@ -106,7 +106,7 @@ export default function Cart() {
           <section className="flex flex-col gap-4 mt-4">
             <div className="flex justify-between">
               <p className="font-medium">Subtotal</p>
-              <p>{totalPrice(cart)},-</p>
+              <p>{kr(totalPrice(cart))}</p>
             </div>
             <div className="flex justify-between">
               <p className="font-medium">Delivery</p>
@@ -116,7 +116,7 @@ export default function Cart() {
           <div className="mt-auto pt-8">
             <div className="flex justify-between font-bold text-lg py-4 border-t border-black/80">
               <p className="">Total (VAT included)</p>
-              <p>{totalPrice(cart)},-</p>
+              <p>{kr(totalPrice(cart))}</p>
             </div>
             <Link
               to="/cart/checkout"

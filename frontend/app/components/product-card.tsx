@@ -2,6 +2,7 @@ import { Link } from "@remix-run/react";
 import { type Product } from "~/common/types";
 import iPhone from "../../public/images/iPhone.png";
 import useAuth from "~/hooks/useAuth";
+import { kr } from "~/common/utils";
 
 export function ProductCard({ product }: { product: Product }) {
   const { editCart } = useAuth();
@@ -26,7 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="font-medium text-xl group-hover:text-primary transition-colors duration-500">
             {product.title}
           </h3>
-          <p className="text-primary">{product.price},-</p>
+          <p className="text-primary">{kr(product.price)}</p>
         </div>
       </Link>
     </div>

@@ -11,13 +11,13 @@ export const loader = async () => {
 export default function Accounts() {
   const accounts = useLoaderData<typeof loader>();
   return (
-    <main className="px-8">
+    <main className="">
       <h1 className="font-bold text-4xl ">Accounts</h1>
       <p className="pb-4 font-thin">{accounts.length} accounts</p>
       {!accounts ||
         (accounts.length === 0 && (
           <div>
-            <p className="">No accounts found.</p>
+            <p>No accounts found.</p>
             <Link className={styles.link} to="/login">
               Login
             </Link>

@@ -12,3 +12,12 @@ export const uniqueProducts = (cart: Cart) => {
 
   return unique;
 };
+
+export const kr = (price: number) => {
+  return price
+    .toLocaleString("no-NB", {
+      style: "currency",
+      currency: "NOK",
+    })
+    .split(",")[0];
+};

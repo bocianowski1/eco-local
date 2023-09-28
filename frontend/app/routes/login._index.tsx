@@ -61,13 +61,13 @@ export default function Login() {
         >
           <input
             type="email"
-            className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
+            className={styles.input}
             name="email"
             placeholder="Email..."
           />
           <input
             type="password"
-            className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
+            className={styles.input}
             name="password"
             placeholder="Password..."
           />

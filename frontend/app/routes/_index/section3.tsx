@@ -27,9 +27,11 @@ export default function Section3() {
           Today
         </p>
       </div>
-      <Link to="/products" className={styles.submitButtonLarge}>
-        Get started
-      </Link>
+      <div>
+        <Link to="/products" className={styles.submitButtonLarge}>
+          Get started
+        </Link>
+      </div>
     </section>
   );
 }
