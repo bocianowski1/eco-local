@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"sync"
 )
 
 type Storager interface {
@@ -25,6 +26,7 @@ type Storager interface {
 
 type PostgresStore struct {
 	db *sql.DB
+	mu sync.Mutex
 }
 
 func NewPostgresStore() (*PostgresStore, error) {

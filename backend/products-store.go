@@ -23,6 +23,9 @@ func (s *PostgresStore) createProductTable() error {
 }
 
 func (s *PostgresStore) CreateProduct(prod *Product) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	query := `insert into product 
 	(title, price, description, account_id, created_at, modified_at)
 	values ($1, $2, $3, $4, $5, $6)`
@@ -45,11 +48,17 @@ func (s *PostgresStore) UpdateProduct(prod *Product) error {
 }
 
 func (s *PostgresStore) DeleteProduct(id int) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	_, err := s.db.Query("delete from product where id = $1", id)
 	return err
 }
 
 func (s *PostgresStore) GetProductByID(id int) (*Product, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	rows, err := s.db.Query("select * from product where id = $1", id)
 	if err != nil {
 		return nil, err
@@ -64,6 +73,9 @@ func (s *PostgresStore) GetProductByID(id int) (*Product, error) {
 }
 
 func (s *PostgresStore) GetProduct() ([]*Product, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	rows, err := s.db.Query("select * from product")
 	if err != nil {
 		return nil, err

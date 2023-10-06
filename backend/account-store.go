@@ -26,6 +26,9 @@ func (s *PostgresStore) createAccountTable() error {
 }
 
 func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	query := `insert into account 
 	(first_name, last_name, email, password, token, role, created_at, modified_at)
 	values ($1, $2, $3, $4, $5, $6, $7, $8)`
@@ -66,11 +69,6 @@ func (s *PostgresStore) CreateAccount(acc *Account) (int, error) {
 		return id, nil
 	}
 
-	// if i == 0 {
-	// 	log.Println("Eh")
-	// 	return 1, nil
-	// }
-
 	return 0, fmt.Errorf("Account with email %v not found", acc.Email)
 }
 
@@ -79,11 +77,17 @@ func (s *PostgresStore) UpdateAccount(acc *Account) error {
 }
 
 func (s *PostgresStore) DeleteAccount(id int) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	_, err := s.db.Query("delete from account where id = $1", id)
 	return err
 }
 
 func (s *PostgresStore) GetAccountByID(id int) (*Account, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	rows, err := s.db.Query("select * from account where id = $1", id)
 	if err != nil {
 		return nil, err
@@ -98,6 +102,9 @@ func (s *PostgresStore) GetAccountByID(id int) (*Account, error) {
 }
 
 func (s *PostgresStore) GetAccount() ([]*Account, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	rows, err := s.db.Query(`select * from account`)
 	if err != nil {
 		return nil, err
@@ -118,6 +125,9 @@ func (s *PostgresStore) GetAccount() ([]*Account, error) {
 }
 
 func (s *PostgresStore) GetAccountProducts(id int) ([]*Product, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	rows, err := s.db.Query("select * from product where account_id = $1", id)
 	if err != nil {
 		return nil, err
@@ -138,6 +148,9 @@ func (s *PostgresStore) GetAccountProducts(id int) ([]*Product, error) {
 }
 
 func (s *PostgresStore) GetAccountByEmail(email string) (*Account, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	rows, err := s.db.Query("select * from account where email = $1", email)
 	if err != nil {
 		return nil, err

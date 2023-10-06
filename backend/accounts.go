@@ -18,7 +18,7 @@ func (s *APIServer) HandleAccount(w http.ResponseWriter, r *http.Request) error 
 		}
 	default:
 		{
-			return WriteJSON(w, http.StatusMethodNotAllowed, fmt.Sprintf("Method %v not allowed", r.Method))
+			return s.rw.WriteJSON(http.StatusMethodNotAllowed, fmt.Sprintf("Method %v not allowed", r.Method))
 		}
 	}
 }
@@ -32,22 +32,11 @@ func (s *APIServer) HandleAccountByID(w http.ResponseWriter, r *http.Request) er
 	switch r.Method {
 	case "GET":
 		{
-			account, err := s.store.GetAccountByID(id)
-			if err != nil {
-				return err
-			}
-
-			return WriteJSON(w, http.StatusOK, account)
+			return s.HandleGetAccountByID(w, r, id)
 		}
 	case "DELETE":
 		{
-			if err := s.store.DeleteAccount(id); err != nil {
-				return err
-			}
-
-			return WriteJSON(w, http.StatusOK, map[string]int{
-				"deleted": id,
-			})
+			return s.HandleDeleteAccount(w, r, id)
 		}
 	default:
 		{
@@ -63,7 +52,16 @@ func (s *APIServer) HandleGetAccount(w http.ResponseWriter, r *http.Request) err
 		return err
 	}
 
-	return WriteJSON(w, http.StatusOK, accounts)
+	return s.rw.WriteJSON(http.StatusOK, accounts)
+}
+
+func (s *APIServer) HandleGetAccountByID(w http.ResponseWriter, r *http.Request, id int) error {
+	account, err := s.store.GetAccountByID(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, account)
 }
 
 func (s *APIServer) HandleCreateAccount(w http.ResponseWriter, r *http.Request) error {
@@ -103,6 +101,16 @@ func (s *APIServer) HandleCreateAccount(w http.ResponseWriter, r *http.Request) 
 	}
 
 	return WriteJSON(w, http.StatusCreated, updatedAccount)
+}
+
+func (s *APIServer) HandleDeleteAccount(w http.ResponseWriter, r *http.Request, id int) error {
+	if err := s.store.DeleteAccount(id); err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, map[string]int{
+		"deleted": id,
+	})
 }
 
 func (s *APIServer) HandleAccountProducts(w http.ResponseWriter, r *http.Request) error {

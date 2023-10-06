@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto"
+	"encoding/json"
 	"net/http"
 	"time"
 )
@@ -9,12 +10,33 @@ import (
 type APIServer struct {
 	listenAddr string
 	store      Storager
+	rw         *ResponseWriter
 }
 
 type APIFunc func(w http.ResponseWriter, r *http.Request) error
 
 type APIError struct {
 	Error string `json:"error"`
+}
+
+type ResponseWriter struct {
+	http.ResponseWriter
+}
+
+func (rw *ResponseWriter) WriteHeader(statusCode int) {
+	rw.ResponseWriter.WriteHeader(statusCode)
+}
+
+func (rw *ResponseWriter) Write(b []byte) (int, error) {
+	return rw.ResponseWriter.Write(b)
+}
+
+func (rw *ResponseWriter) WriteJSON(statusCode int, v any) error {
+	// rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(statusCode)
+	// return json.NewEncoder(rw).Encode(v)
+	// return hello world string
+	return json.NewEncoder(rw).Encode("hello world")
 }
 
 type RouteHandlerPair struct {
