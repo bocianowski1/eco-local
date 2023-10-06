@@ -16,46 +16,46 @@ func withJWTAuth(handlerFunc http.HandlerFunc, s Storager) http.HandlerFunc {
 		tokenString := r.Header.Get("x-jwt-token")
 		if tokenString == "" {
 			log.Println("No JWT token provided")
-			permissionDenied(w)
+			PermissionDenied(w)
 			return
 		}
 
 		token, err := validateJWT(tokenString)
 		if err != nil {
 			log.Println("Error validating JWT token:", err, tokenString)
-			permissionDenied(w)
+			PermissionDenied(w)
 			return
 		}
 
 		if !token.Valid {
 			log.Println("Invalid JWT token:", err)
-			permissionDenied(w)
+			PermissionDenied(w)
 			return
 		}
 
 		userID, err := getID(r)
 		if err != nil {
 			log.Println("Error getting ID from request:", err)
-			permissionDenied(w)
+			PermissionDenied(w)
 			return
 		}
-		account, err := s.GetAccountByID(userID)
+		user, err := s.GetUserByID(userID)
 		if err != nil {
-			WriteJSON(w, http.StatusNotFound, fmt.Sprintf("Account with id %v not found", userID))
+			WriteJSON(w, http.StatusNotFound, fmt.Sprintf("User with id %v not found", userID))
 			return
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
 		claimsEmail := claims["email"].(string)
-		if account.Email != claimsEmail {
-			log.Println("Account number mismatch", account.Email, claimsEmail)
-			permissionDenied(w)
+		if user.Email != claimsEmail {
+			log.Println("User number mismatch", user.Email, claimsEmail)
+			PermissionDenied(w)
 			return
 		}
 		// claimsAccountNumber := int64(claims["account_number"].(float64))
 		// if account.Number != claimsAccountNumber {
 		// 	log.Println("Account number mismatch", account.Number, claimsAccountNumber)
-		// 	permissionDenied(w)
+		// 	PermissionDenied(w)
 		// 	return
 		// }
 
@@ -74,7 +74,7 @@ func validateJWT(tokenString string) (*jwt.Token, error) {
 	})
 }
 
-func createJWT(account *Account) (string, error) {
+func createJWT(account *User) (string, error) {
 	claims := jwt.MapClaims{
 		"expires_at": time.Now().Add(time.Hour * 24).Unix(),
 		"email":      account.Email,

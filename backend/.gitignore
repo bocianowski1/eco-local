@@ -18,3 +18,5 @@ main
 
 **/*.log
 local.settings.json
+
+bin/

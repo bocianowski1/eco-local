@@ -7,14 +7,14 @@ import (
 )
 
 type Storager interface {
-	// Account
-	CreateAccount(*Account) (int, error)
-	UpdateAccount(*Account) error
-	DeleteAccount(int) error
-	GetAccount() ([]*Account, error)
-	GetAccountByID(int) (*Account, error)
-	GetAccountProducts(int) ([]*Product, error)
-	GetAccountByEmail(string) (*Account, error)
+	// User
+	CreateUser(*User) (int, error)
+	UpdateUser(*User) error
+	DeleteUser(int) error
+	GetUser() ([]*User, error)
+	GetUserByID(int) (*User, error)
+	GetUserProducts(int) ([]*Product, error)
+	GetUserByEmail(string) (*User, error)
 
 	// Product
 	CreateProduct(*Product) error
@@ -48,7 +48,7 @@ func NewPostgresStore() (*PostgresStore, error) {
 }
 
 func (s *PostgresStore) Init() error {
-	err := s.createAccountTable()
+	err := s.createUserTable()
 	if err != nil {
 		return err
 	}

@@ -13,7 +13,7 @@ func (s *PostgresStore) createProductTable() error {
 		title varchar(100),
         price serial,
         description varchar(100),
-		account_id int,
+		user_id int,
 		created_at timestamp,
         modified_at timestamp
 	)`
@@ -27,7 +27,7 @@ func (s *PostgresStore) CreateProduct(prod *Product) error {
 	defer s.mu.Unlock()
 
 	query := `insert into product 
-	(title, price, description, account_id, created_at, modified_at)
+	(title, price, description, user_id, created_at, modified_at)
 	values ($1, $2, $3, $4, $5, $6)`
 
 	_, err := s.db.Query(
@@ -35,7 +35,7 @@ func (s *PostgresStore) CreateProduct(prod *Product) error {
 		prod.Title,
 		prod.Price,
 		prod.Description,
-		prod.AccountID,
+		prod.UserID,
 		prod.CreatedAt,
 		prod.ModifiedAt,
 	)
@@ -102,7 +102,7 @@ func scanIntoProduct(rows *sql.Rows) (*Product, error) {
 		&prod.Title,
 		&prod.Price,
 		&prod.Description,
-		&prod.AccountID,
+		&prod.UserID,
 		&prod.CreatedAt,
 		&prod.ModifiedAt,
 	)

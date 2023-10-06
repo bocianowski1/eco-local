@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (s *APIServer) Login(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) Login(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case "POST":
 		{
@@ -21,32 +21,32 @@ func (s *APIServer) Login(w http.ResponseWriter, r *http.Request) error {
 	}
 }
 
-func (s *APIServer) HandleLogin(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) HandleLogin(w http.ResponseWriter, r *http.Request) error {
 	login := Login{}
 	if err := json.NewDecoder(r.Body).Decode(&login); err != nil {
 		log.Println("Error decoding login:", err)
 		return err
 	}
 
-	account, err := s.store.GetAccountByEmail(login.Email)
+	user, err := s.store.GetUserByEmail(login.Email)
 	if err != nil {
-		log.Println("Error getting account by email:", err)
+		log.Println("Error getting user by email:", err)
 		return err
 	}
 
 	encryptedPassword := crypto.SHA256.New().Sum([]byte(login.Password))
 
-	if string(account.Password) != string(encryptedPassword) {
+	if string(user.Password) != string(encryptedPassword) {
 		return fmt.Errorf("Invalid password")
 	}
 
-	token, err := createJWT(account)
+	token, err := createJWT(user)
 	if err != nil {
 		log.Println("Error creating JWT:", err)
 		return err
 	}
 
-	account.Token = token
+	user.Token = token
 
-	return WriteJSON(w, http.StatusOK, account)
+	return WriteJSON(w, http.StatusOK, user)
 }
