@@ -59,7 +59,7 @@ export default function Products() {
           />
         </div>
       </div>
-      <ul className="grid grid-cols-4 gap-8 pb-12">
+      <ul className="grid grid-cols-2 gap-8 pb-12">
         {products &&
           products.map((product: Product) => (
             <li key={product.id}>

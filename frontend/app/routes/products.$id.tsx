@@ -62,11 +62,11 @@ export default function ProductsID() {
   const { editCart, cart } = useAuth();
 
   return (
-    <div className="flex gap-12 ml-20 pb-12">
-      <div className="h-[36rem] rounded-sm">
+    <div className="flex flex-col gap-12 pb-12">
+      <div className="h-[26rem] rounded-sm">
         <img src={iPhone} alt="" className="w-full h-full object-contain" />
       </div>
-      <div className="flex flex-col p-4 w-2/5 max-h-[28rem] border border-black/80 rounded-sm">
+      <div className="flex flex-col p-4">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-4xl">{product.title}</h2>
           <div>
@@ -113,7 +113,7 @@ export default function ProductsID() {
           <h3 className="font-medium">Description</h3>
           <p className="">{product.description}</p>
         </div>
-        <div className="mt-auto">
+        <div className="mt-12">
           <section className="flex justify-between items-end pb-2">
             <p className="font-light text-sm">
               You have{" "}

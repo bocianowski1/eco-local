@@ -37,10 +37,10 @@ export function Header() {
         )}
       </AnimatePresence>
       <Link to="/">
-        <h2 className="font-bold text-xl mx-8">EcoLocal</h2>
+        <h2 className="font-extrabold text-3xl mx-6">ECOLOCAL</h2>
       </Link>
 
-      <ul className="flex items-center gap-4 font-medium mx-8">
+      <ul className="flex items-center gap-4 font-medium mx-4">
         <li>
           <Link to={user ? `/users/${id}?token=${token}` : "/login"}>
             <UserIcon />
