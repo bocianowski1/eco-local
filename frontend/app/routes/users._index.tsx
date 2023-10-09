@@ -4,7 +4,7 @@ import { styles } from "~/common/styles";
 import { type Account } from "~/common/types";
 
 export const loader = async () => {
-  const res = await fetch("http://localhost:8080/api/accounts");
+  const res = await fetch("http://localhost:8080/api/users");
   return json(await res.json());
 };
 

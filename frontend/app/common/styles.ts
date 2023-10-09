@@ -1,5 +1,5 @@
 export const styles = {
-  link: "text-primary hover:underline transition-all duration-200",
+  link: "text-primary hover:pointer-cursor hover:underline transition-all duration-200",
   submitButton:
     "bg-primary font-medium h-fit rounded-sm text-white px-8 py-3 hover:bg-accent transition-colors duration-200",
   submitButtonLarge:

@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react";
 import { redirect, type ActionFunction } from "@remix-run/node";
 import { styles } from "~/common/styles";
+import type { Account } from "~/common/types";
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
@@ -18,7 +19,7 @@ export const action: ActionFunction = async ({ request }) => {
       },
     });
   }
-  const response = await fetch("http://localhost:8080/api/accounts", {
+  const response = await fetch("http://localhost:8080/api/users", {
     method: "POST",
     body: JSON.stringify({
       firstName: body.get("firstName"),
@@ -47,15 +48,15 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  const account = await response.json();
+  const user: Account = await response.json();
 
-  return redirect(`/accounts/${account.id}?token=${account.token}`);
+  return redirect(`/users/${user.id}?token=${user.token}`);
 };
 
 export default function Register() {
   return (
     <div>
-      <div className="w-1/3 mx-auto mt-24">
+      <div className="w-80 mx-auto mt-24">
         <h1 className="font-bold text-2xl mb-6">Register</h1>
         <Form
           action="/register"

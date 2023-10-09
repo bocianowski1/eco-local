@@ -4,9 +4,9 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { styles } from "~/common/styles";
-import type { Product } from "~/common/types";
+import type { Account, Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
-import { Settings } from "~/components";
+import { SettingsIcon } from "~/components";
 
 export const action: ActionFunction = async ({ request }) => {
   switch (request.method) {
@@ -14,7 +14,7 @@ export const action: ActionFunction = async ({ request }) => {
     //   return redirect("/");
     // }
     case "PUT": {
-      return redirect("/accounts");
+      return redirect("/users");
     }
     default: {
       return new Response("Method not allowed", {
@@ -30,19 +30,16 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = request.url.split("?token=")[1];
   if (!token) {
-    return redirect(`/accounts?token=${token}`);
+    return redirect(`/users?token=${token}`);
   }
-  let response = await fetch(
-    `http://localhost:8080/api/accounts/${params.id}`,
-    {
-      headers: {
-        "x-jwt-token": token,
-      },
-    }
-  );
+  let response = await fetch(`http://localhost:8080/api/users/${params.id}`, {
+    headers: {
+      "x-jwt-token": token,
+    },
+  });
 
   if (response.status !== 200) {
-    redirect("/accounts");
+    redirect("/users");
   }
 
   if (response.status === 404) {
@@ -63,10 +60,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     });
   }
 
-  const account = await response.json();
+  const account: Account = await response.json();
+
+  if (account.id !== parseInt(params.id ?? "0")) {
+    throw new Response("Unauthorized", {
+      status: 401,
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  }
 
   response = await fetch(
-    `http://localhost:8080/api/accounts/${params.id}/products`,
+    `http://localhost:8080/api/users/${params.id}/products`,
     {
       headers: {
         "x-jwt-token": token,
@@ -75,7 +81,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   );
 
   if (response.status !== 200) {
-    redirect("/accounts");
+    redirect("/users");
   }
 
   if (response.status === 404) {
@@ -106,6 +112,11 @@ export default function AccountsID() {
   const [showSettings, setShowSettings] = useState(false);
   const { setUser, setToken, signOut } = useAuth();
 
+  // const urlId = window.location.pathname.split("/")[2];
+  // if (urlId !== account.id) {
+  //   return redirect(`/users/${account.id}?token=${account.token}`);
+  // }
+
   useEffect(() => {
     setUser(account);
     setToken(account.token);
@@ -127,7 +138,7 @@ export default function AccountsID() {
             className="h-fit w-fit"
             onClick={() => setShowSettings((s) => !s)}
           >
-            <Settings />
+            <SettingsIcon />
           </button>
         </section>
         <section className="">
@@ -168,7 +179,7 @@ export default function AccountsID() {
               <Link to="/" onClick={signOut} className={styles.link}>
                 Sign out
               </Link>
-              <Form action={`/accounts/${account.id}`} method="PUT">
+              <Form action={`/users/${account.id}`} method="PUT">
                 <button>Edit account</button>
               </Form>
             </div>

@@ -1,7 +1,7 @@
 import { Footer } from "./footer";
-import { Header } from "./header";
+import { Header } from "./header/header";
 import { ProductCard } from "./product-card";
 import { CartPreview } from "./cart-preview";
-import { Settings } from "./icons";
+import { SettingsIcon } from "./icons";
 
-export { Footer, Header, ProductCard, CartPreview, Settings };
+export { Footer, Header, ProductCard, CartPreview, SettingsIcon };

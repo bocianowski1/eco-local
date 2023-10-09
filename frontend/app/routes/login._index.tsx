@@ -30,9 +30,9 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  const account = await response.json();
+  const user = await response.json();
 
-  return redirect(`/accounts/${account.id}?token=${account.token}`);
+  return redirect(`/users/${user.id}?token=${user.token}`);
 };
 
 // function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -51,7 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Login() {
   return (
     <div>
-      <div className="w-1/3 mx-auto mt-24">
+      <div className="w-80 mx-auto mt-24">
         <h1 className="font-bold text-2xl mb-6">Login</h1>
         <Form
           action="/login"

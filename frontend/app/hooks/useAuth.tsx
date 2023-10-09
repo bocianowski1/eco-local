@@ -97,9 +97,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("cart");
+    // localStorage.removeItem("user");
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("cart");
+    localStorage.clear();
     setUser(null);
     setToken("");
     setCart({

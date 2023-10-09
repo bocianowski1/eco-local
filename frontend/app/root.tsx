@@ -79,7 +79,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="px-8">{children}</main>
+      <main className="px-8 overflow-hidden">{children}</main>
       {/* <Footer /> */}
     </>
   );
