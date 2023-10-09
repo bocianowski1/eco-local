@@ -11,10 +11,11 @@ export function Header() {
   const { user, cart, token } = useAuth() as any;
   const [showCart, setShowCart] = useState(false);
   const id = user?.id;
+
   return (
     <header
       className={`sticky top-0 left-0 right-0 flex justify-between items-center bg-white z-50
-                        mb-16 py-6 border-b border-black/80`}
+                  mb-16 py-6 border-b border-black/80`}
     >
       <AnimatePresence>
         {showCart && (

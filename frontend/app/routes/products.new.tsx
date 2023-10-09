@@ -1,6 +1,7 @@
 import { redirect, type ActionFunctionArgs } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { styles } from "~/common/styles";
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const body = await request.formData();
@@ -79,7 +80,7 @@ export default function NewProduct() {
 
   return (
     <div>
-      <div className="w-1/3 mx-auto mt-24">
+      <div className="w-80 mx-auto mt-24">
         <h1 className="font-bold text-2xl mb-6">New Product</h1>
         <Form
           action={`/products/new?${new URLSearchParams({
@@ -122,8 +123,7 @@ export default function NewProduct() {
             <button
               id="submit"
               type="submit"
-              className="font-medium text-lg px-12 flex justify-center py-3 rounded-sm
-                      bg-primary text-white hover:bg-accent transition-colors duration-200"
+              className={styles.submitButtonLarge}
             >
               Create
             </button>

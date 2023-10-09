@@ -9,31 +9,25 @@ export const loader = async () => {
 };
 
 export default function Accounts() {
-  const accounts = useLoaderData<typeof loader>();
+  const users = useLoaderData<typeof loader>();
   return (
     <main className="">
-      <h1 className="font-bold text-4xl ">Accounts</h1>
-      <p className="pb-4 font-thin">{accounts.length} accounts</p>
-      {!accounts ||
-        (accounts.length === 0 && (
+      <h1 className="font-bold text-4xl ">Users</h1>
+      <p className="pb-4 font-thin">{users.length} users</p>
+      {!users ||
+        (users.length === 0 && (
           <div>
-            <p>No accounts found.</p>
+            <p>No users found.</p>
             <Link className={styles.link} to="/login">
               Login
             </Link>
           </div>
         ))}
-      {accounts && accounts.length > 0 && (
+      {users && users.length > 0 && (
         <ul>
-          {accounts.map((account: Account) => (
-            <li key={account.id}>
-              {/* <Link to={account.id} className="text-blue-600 underline"> */}
-              <div>
-                <p>
-                  {account.firstName} {account.lastName}
-                </p>
-              </div>
-              {/* </Link> */}
+          {users.map((account: Account) => (
+            <li key={account.id} className="font-medium">
+              {account.firstName} {account.lastName}
             </li>
           ))}
         </ul>
