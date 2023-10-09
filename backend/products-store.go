@@ -3,30 +3,16 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 )
 
-func (s *PostgresStore) createProductTable() error {
-	query := `create table if not exists product (
-		id serial primary key,
-		title varchar(100),
-        price serial,
-        description varchar(100),
-		user_id int,
-		created_at timestamp,
-        modified_at timestamp
-	)`
-
-	_, err := s.db.Exec(query)
-	return err
-}
-
-func (s *PostgresStore) CreateProduct(prod *Product) error {
+func (s *PostgresStore) CreateProduct(prod *Product) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	query := `insert into product 
+	query := `insert into products 
 	(title, price, description, user_id, created_at, modified_at)
 	values ($1, $2, $3, $4, $5, $6)`
 
@@ -40,7 +26,31 @@ func (s *PostgresStore) CreateProduct(prod *Product) error {
 		prod.ModifiedAt,
 	)
 
-	return err
+	if err != nil {
+		log.Println("Error creating product:", err)
+		return 0, err
+	}
+
+	rows, err := s.db.Query("select id from products where title = $1", prod.Title)
+	if err != nil {
+		return 0, err
+	}
+
+	defer rows.Close()
+
+	i := 0
+	for rows.Next() {
+		i++
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			return 0, err
+		}
+
+		return id, nil
+	}
+
+	return 0, fmt.Errorf("Product with title %v not found", prod.Title)
 }
 
 func (s *PostgresStore) UpdateProduct(prod *Product) error {
@@ -51,7 +61,7 @@ func (s *PostgresStore) DeleteProduct(id int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	_, err := s.db.Query("delete from product where id = $1", id)
+	_, err := s.db.Query("delete from products where id = $1", id)
 	return err
 }
 
@@ -59,7 +69,7 @@ func (s *PostgresStore) GetProductByID(id int) (*Product, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	rows, err := s.db.Query("select * from product where id = $1", id)
+	rows, err := s.db.Query("select * from products where id = $1", id)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +86,7 @@ func (s *PostgresStore) GetProduct() ([]*Product, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	rows, err := s.db.Query("select * from product")
+	rows, err := s.db.Query("select * from products")
 	if err != nil {
 		return nil, err
 	}

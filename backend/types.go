@@ -95,8 +95,8 @@ type LoginRequest struct {
 type Product struct {
 	ID          int       `json:"id"`
 	Title       string    `json:"title"`
-	Description string    `json:"description"`
 	Price       float64   `json:"price"`
+	Description string    `json:"description"`
 	UserID      int       `json:"userId"`
 	CreatedAt   time.Time `json:"createdAt"`
 	ModifiedAt  time.Time `json:"modifiedAt"`
@@ -105,8 +105,9 @@ type Product struct {
 func NewProduct(title, description string, price float64, userID int) *Product {
 	return &Product{
 		Title:       title,
-		Description: description,
 		Price:       price,
+		Description: description,
+		UserID:      userID,
 		CreatedAt:   time.Now().UTC(),
 		ModifiedAt:  time.Now().UTC(),
 	}

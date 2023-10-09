@@ -19,7 +19,7 @@ type Storager interface {
 	GetUserByEmail(string) (*User, error)
 
 	// Product
-	CreateProduct(*Product) error
+	CreateProduct(*Product) (int, error)
 	UpdateProduct(*Product) error
 	DeleteProduct(int) error
 	GetProduct() ([]*Product, error)
@@ -69,6 +69,7 @@ func (s *PostgresStore) Init() error {
 func (s *PostgresStore) DropAllTables() error {
 	_, err := s.db.Exec(`
 		DROP TABLE IF EXISTS users CASCADE;
+		DROP TABLE IF EXISTS products CASCADE;
 	`)
 
 	return err
@@ -98,9 +99,9 @@ func (s *PostgresStore) CreateTables() error {
 		CREATE TABLE IF NOT EXISTS products (
 			id SERIAL PRIMARY KEY,
 			title VARCHAR(255) NOT NULL,
-			description VARCHAR(255) NOT NULL,
 			price DECIMAL NOT NULL,
-			user_id INT NOT NULL REFERENCES users(id),
+			description VARCHAR(255) NOT NULL,
+			user_id INT NOT NULL,
 
 			created_at TIMESTAMP NOT NULL,
 			modified_at TIMESTAMP NOT NULL

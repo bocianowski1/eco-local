@@ -84,9 +84,22 @@ func (s *Server) HandleCreateProduct(w http.ResponseWriter, r *http.Request) err
 		return WriteJSON(w, http.StatusBadRequest, "Bad request")
 	}
 
-	if err := s.store.CreateProduct(product); err != nil {
+	id, err := s.store.CreateProduct(product)
+	if err != nil {
 		return err
 	}
 
-	return WriteJSON(w, http.StatusCreated, product)
+	if id == 0 {
+		return WriteJSON(w, http.StatusBadRequest, HTTPError{
+			StatusCode: http.StatusBadRequest,
+			Message:    fmt.Sprintf("Product with title %v not found", product.Title),
+		})
+	}
+
+	updatedProduct, err := s.store.GetProductByID(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusCreated, updatedProduct)
 }
