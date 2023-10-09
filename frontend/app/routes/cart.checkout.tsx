@@ -9,7 +9,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="flex gap-12 pb-12">
+    <div className="flex flex-col gap-12 pb-12">
       <div className="px-8 py-4 rounded-sm border border-black/80 h-fit flex-1 transition-all duration-300">
         <h2 className="font-bold text-3xl border-b border-black/80 pb-4 mb-2">
           Payment details
@@ -34,7 +34,7 @@ export default function Checkout() {
       {cart.products.length > 0 && (
         <div
           className="px-8 pt-4 pb-6 rounded-sm max-h-[22rem] flex flex-col 
-                      border border-black/80 w-1/3 transition-all duration-300"
+                      border border-black/80 transition-all duration-300"
         >
           <h2 className="font-bold text-3xl border-b border-black/80 pb-4">
             Total

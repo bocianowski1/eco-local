@@ -55,7 +55,7 @@ export function Header() {
           <div
             onMouseEnter={() => setShowCart(true)}
             onMouseLeave={() => setShowCart(false)}
-            className="absolute -top-2 -right-3 h-5 w-5 rounded-full bg-white
+            className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-white
                           border-2 border-black/80 text-xs flex items-center justify-center 
                           group-hover:cursor-pointer"
           >

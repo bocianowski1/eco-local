@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { styles } from "~/common/styles";
-import { type Account } from "~/common/types";
+import { type User } from "~/common/types";
 
 export const loader = async () => {
   const res = await fetch("http://localhost:8080/api/users");
@@ -25,9 +25,9 @@ export default function Accounts() {
         ))}
       {users && users.length > 0 && (
         <ul>
-          {users.map((account: Account) => (
-            <li key={account.id} className="font-medium">
-              {account.firstName} {account.lastName}
+          {users.map((user: User) => (
+            <li key={user.id}>
+              {user.firstName} {user.lastName}
             </li>
           ))}
         </ul>

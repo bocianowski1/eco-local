@@ -4,7 +4,7 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { styles } from "~/common/styles";
-import type { Account, Product } from "~/common/types";
+import type { User, Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
 import { SettingsIcon } from "~/components";
 
@@ -60,7 +60,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     });
   }
 
-  const account: Account = await response.json();
+  const account: User = await response.json();
 
   if (account.id !== parseInt(params.id ?? "0")) {
     throw new Response("Unauthorized", {

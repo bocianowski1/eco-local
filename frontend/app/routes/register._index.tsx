@@ -1,7 +1,7 @@
 import { Form } from "@remix-run/react";
 import { redirect, type ActionFunction } from "@remix-run/node";
 import { styles } from "~/common/styles";
-import type { Account } from "~/common/types";
+import type { User } from "~/common/types";
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
@@ -48,7 +48,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  const user: Account = await response.json();
+  const user: User = await response.json();
 
   return redirect(`/users/${user.id}?token=${user.token}`);
 };

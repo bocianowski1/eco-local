@@ -1,10 +1,10 @@
 import { createContext, useState, useContext, useMemo, useEffect } from "react";
-import type { Account, Cart, Product } from "../common/types";
+import type { User, Cart, Product } from "../common/types";
 
 const AuthContext = createContext({
   user: null,
   token: "",
-  setUser: (user: Account) => {},
+  setUser: (user: User) => {},
   setToken: (token: string) => {},
   editCart: (product: Product, remove?: boolean) => {},
   removeEveryInstanceFromCart: (product: Product) => {},
@@ -17,7 +17,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<Account | null | any>(null);
+  const [user, setUser] = useState<User | null | any>(null);
   const [cart, setCart] = useState<Cart>({
     products: [],
   });
@@ -97,9 +97,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = () => {
-    // localStorage.removeItem("user");
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("cart");
     localStorage.clear();
     setUser(null);
     setToken("");
