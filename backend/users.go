@@ -88,8 +88,11 @@ func (s *Server) HandleCreateUser(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	if id == 1 {
-		return WriteJSON(w, http.StatusCreated, user)
+	if id == -1 {
+		return WriteJSON(w, http.StatusBadRequest, HTTPError{
+			StatusCode: http.StatusBadRequest,
+			Message:    fmt.Sprintf("User with email %v already exists", user.Email),
+		})
 	}
 
 	updatedUser, err := s.store.GetUserByID(id)

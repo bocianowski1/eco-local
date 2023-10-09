@@ -36,11 +36,22 @@ func (s *PostgresStore) CreateUser(user *User) (int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	var exists bool
+	var err error
+	err = s.db.QueryRow("select exists(select 1 from users where email = $1)", user.Email).Scan(&exists)
+	if err != nil {
+		return 0, err
+	}
+
+	if exists {
+		return -1, nil
+	}
+
 	query := `insert into users 
 	(first_name, last_name, email, password, token, created_at, modified_at)
 	values ($1, $2, $3, $4, $5, $6, $7)`
 
-	_, err := s.db.Query(
+	_, err = s.db.Query(
 		query,
 		user.FirstName,
 		user.LastName,

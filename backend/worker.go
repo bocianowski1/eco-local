@@ -52,7 +52,7 @@ func (w *Worker) Start() {
 	for {
 		select {
 		case request := <-w.workQueue:
-			fmt.Printf("Worker %d processing request for URL: %s\n", w.id, request.URL.Path)
+			fmt.Printf("Worker %d processing %v request for URL: %s\n", w.id, request.Method, request.URL.Path)
 		case <-w.shutdown:
 			fmt.Printf("Worker %d shutting down.\n", w.id)
 			return
