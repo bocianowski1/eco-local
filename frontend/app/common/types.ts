@@ -2,8 +2,9 @@ export type User = {
   id: number;
   firstName: string;
   lastName: string;
-  accountNumber: number;
-  balance: number;
+  email: string;
+  verified: boolean;
+  premium: boolean;
   token: string;
 };
 

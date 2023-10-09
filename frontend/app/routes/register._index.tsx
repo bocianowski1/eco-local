@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({ request }) => {
       },
     });
   }
-  const response = await fetch("http://localhost:8080/api/users", {
+  let response = await fetch("http://localhost:8080/api/users", {
     method: "POST",
     body: JSON.stringify({
       firstName: body.get("firstName"),
@@ -50,6 +50,23 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user: User = await response.json();
 
+  response = await fetch("http://localhost:7071/api/verify", {
+    method: "POST",
+    body: JSON.stringify({
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+    }),
+  });
+
+  if (response.status !== 202) {
+    throw new Response("Something went wrong", {
+      status: response.status,
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  }
+
   return redirect(`/users/${user.id}?token=${user.token}`);
 };
 
@@ -65,25 +82,25 @@ export default function Register() {
         >
           <input
             type="text"
-            className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
+            className={styles.input}
             name="firstName"
             placeholder="Jane"
           />
           <input
             type="text"
-            className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
+            className={styles.input}
             name="lastName"
             placeholder="Doe"
           />
           <input
             type="email"
-            className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
+            className={styles.input}
             name="email"
             placeholder="janedoe@gmail.com"
           />
           <input
             type="password"
-            className="px-4 py-2 border-2 focus:border-primary focus:outline-none focus:ring-0"
+            className={styles.input}
             name="password"
             placeholder="Password..."
           />
