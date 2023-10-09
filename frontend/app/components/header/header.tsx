@@ -5,7 +5,7 @@ import useAuth from "~/hooks/useAuth";
 import { CartPreview } from "..";
 import HamburgerMenu from "./hamburger";
 import { styles } from "~/common/styles";
-import { CartIcon, UserIcon } from "../icons";
+import { CartIcon, ShoppingBagIcon, UserIcon } from "../icons";
 
 export function Header() {
   const { user, cart, token } = useAuth() as any;
@@ -45,6 +45,11 @@ export function Header() {
         <li>
           <Link to={user ? `/users/${id}?token=${token}` : "/login"}>
             <UserIcon />
+          </Link>
+        </li>
+        <li>
+          <Link to="/products">
+            <ShoppingBagIcon />
           </Link>
         </li>
         <li
