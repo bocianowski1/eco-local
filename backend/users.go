@@ -117,20 +117,6 @@ func (s *Server) HandleDeleteUser(w http.ResponseWriter, r *http.Request, id int
 	})
 }
 
-func (s *Server) HandleUserProducts(w http.ResponseWriter, r *http.Request) error {
-	id, err := getID(r)
-	if err != nil {
-		return err
-	}
-
-	products, err := s.store.GetUserProducts(id)
-	if err != nil {
-		return err
-	}
-
-	return WriteJSON(w, http.StatusOK, products)
-}
-
 func getID(r *http.Request) (int, error) {
 	idString := mux.Vars(r)["id"]
 

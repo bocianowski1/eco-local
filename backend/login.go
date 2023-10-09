@@ -12,7 +12,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case "POST":
 		{
-			return s.HandleLogin(w, r)
+			return s.HandleUserLogin(w, r)
 		}
 	default:
 		{
@@ -21,20 +21,20 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) error {
 	}
 }
 
-func (s *Server) HandleLogin(w http.ResponseWriter, r *http.Request) error {
-	login := Login{}
-	if err := json.NewDecoder(r.Body).Decode(&login); err != nil {
+func (s *Server) HandleUserLogin(w http.ResponseWriter, r *http.Request) error {
+	loginReq := LoginRequest{}
+	if err := json.NewDecoder(r.Body).Decode(&loginReq); err != nil {
 		log.Println("Error decoding login:", err)
 		return err
 	}
 
-	user, err := s.store.GetUserByEmail(login.Email)
+	user, err := s.store.GetUserByEmail(loginReq.Email)
 	if err != nil {
 		log.Println("Error getting user by email:", err)
 		return err
 	}
 
-	encryptedPassword := crypto.SHA256.New().Sum([]byte(login.Password))
+	encryptedPassword := crypto.SHA256.New().Sum([]byte(loginReq.Password))
 
 	if string(user.Password) != string(encryptedPassword) {
 		return fmt.Errorf("Invalid password")

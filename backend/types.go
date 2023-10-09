@@ -19,13 +19,13 @@ type HandlerFuncPair struct {
 }
 
 type User struct {
-	ID         string    `bson:"_id,omitempty"`
+	ID         int       `json:"id"`
 	FirstName  string    `json:"firstName"`
 	LastName   string    `json:"lastName"`
 	Email      string    `json:"email"`
 	Password   []byte    `json:"-"`
 	Token      string    `json:"token"`
-	Role       string    `json:"role"`
+	Premium    bool      `json:"premium"`
 	CreatedAt  time.Time `json:"createdAt"`
 	ModifiedAt time.Time `json:"modifiedAt"`
 }
@@ -36,7 +36,6 @@ func NewUser(firstName, lastName, email, password string) *User {
 		LastName:   lastName,
 		Email:      email,
 		Password:   crypto.SHA256.New().Sum([]byte(password)),
-		Role:       "USER",
 		CreatedAt:  time.Now().UTC(),
 		ModifiedAt: time.Now().UTC(),
 	}
@@ -49,35 +48,73 @@ type CreateUserRequest struct {
 	Password  string `json:"password"`
 }
 
+type Business struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Password  []byte    `json:"-"`
+	Token     string    `json:"token"`
+	Location  Location  `json:"location"`
+	Products  []Product `json:"products"`
+	CreatedAt time.Time `json:"createdAt"`
+	Modified  time.Time `json:"modifiedAt"`
+}
+
+func NewBusiness(name, email, password string, location Location) *Business {
+	return &Business{
+		Name:      name,
+		Email:     email,
+		Password:  crypto.SHA256.New().Sum([]byte(password)),
+		Location:  location,
+		Products:  []Product{},
+		CreatedAt: time.Now().UTC(),
+		Modified:  time.Now().UTC(),
+	}
+}
+
+type CreateBusinessRequest struct {
+	Name     string   `json:"name"`
+	Email    string   `json:"email"`
+	Password string   `json:"password"`
+	Location Location `json:"location"`
+}
+
+type Location struct {
+	Address    string  `json:"address"`
+	City       string  `json:"city"`
+	PostalCode string  `json:"postalCode"`
+	Latitude   float64 `json:"latitude"`
+	Longitude  float64 `json:"longitude"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Product struct {
 	ID          int       `json:"id"`
 	Title       string    `json:"title"`
-	Price       int       `json:"price"`
 	Description string    `json:"description"`
+	Price       float64   `json:"price"`
 	UserID      int       `json:"userId"`
 	CreatedAt   time.Time `json:"createdAt"`
 	ModifiedAt  time.Time `json:"modifiedAt"`
 }
 
-func NewProduct(title, description string, price, userID int) *Product {
+func NewProduct(title, description string, price float64, userID int) *Product {
 	return &Product{
 		Title:       title,
 		Description: description,
 		Price:       price,
-		UserID:      userID,
 		CreatedAt:   time.Now().UTC(),
 		ModifiedAt:  time.Now().UTC(),
 	}
 }
 
-type Login struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 type CreateProductRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Price       int    `json:"price"`
-	AccountID   int    `json:"accountId"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	UserID      int     `json:"userId"`
 }

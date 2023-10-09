@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 	"sync"
 )
 
@@ -12,8 +14,8 @@ type Storager interface {
 	UpdateUser(*User) error
 	DeleteUser(int) error
 	GetUser() ([]*User, error)
-	GetUserByID(int) (*User, error)
 	GetUserProducts(int) ([]*Product, error)
+	GetUserByID(int) (*User, error)
 	GetUserByEmail(string) (*User, error)
 
 	// Product
@@ -30,7 +32,7 @@ type PostgresStore struct {
 }
 
 func NewPostgresStore() (*PostgresStore, error) {
-	connStr := "user=postgres dbname=db password=postgres sslmode=disable"
+	connStr := connectionString()
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Println("Could not connect")
@@ -48,13 +50,67 @@ func NewPostgresStore() (*PostgresStore, error) {
 }
 
 func (s *PostgresStore) Init() error {
-	err := s.createUserTable()
+	var err error
+	err = s.DropAllTables()
 	if err != nil {
+		log.Println("Error dropping tables")
 		return err
 	}
-	err = s.createProductTable()
+
+	err = s.CreateTables()
 	if err != nil {
+		log.Println("Error creating tables")
 		return err
 	}
+
 	return nil
+}
+
+func (s *PostgresStore) DropAllTables() error {
+	_, err := s.db.Exec(`
+		DROP TABLE IF EXISTS users CASCADE;
+	`)
+
+	return err
+}
+
+func (s *PostgresStore) CreateTables() error {
+	var err error
+	_, err = s.db.Exec(`
+		CREATE TABLE IF NOT EXISTS users (
+			id SERIAL PRIMARY KEY,
+			first_name VARCHAR(255) NOT NULL,
+			last_name VARCHAR(255) NOT NULL,
+			email VARCHAR(255) NOT NULL,
+			password BYTEA NOT NULL,
+			token VARCHAR(255) NOT NULL,
+			premium BOOLEAN NOT NULL DEFAULT FALSE,
+
+			created_at TIMESTAMP NOT NULL,
+			modified_at TIMESTAMP NOT NULL
+		);
+	`)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func connectionString() string {
+	var (
+		host     = os.Getenv("DB_HOST")
+		port     = os.Getenv("DB_PORT")
+		user     = os.Getenv("DB_USER")
+		password = os.Getenv("DB_PASSWORD")
+		dbname   = os.Getenv("DB_NAME")
+	)
+
+	if host == "" || port == "" || user == "" || password == "" || dbname == "" {
+		log.Println("Missing required environment variables")
+		return "user=postgres dbname=db password=postgres host=host.docker.internal sslmode=disable"
+	}
+	return fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", user, dbname, password, host, port)
+
 }

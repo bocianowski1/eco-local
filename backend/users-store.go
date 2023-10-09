@@ -4,25 +4,32 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	_ "github.com/lib/pq"
 )
 
-func (s *PostgresStore) createUserTable() error {
-	query := `create table if not exists users (
-		id serial primary key,
-		first_name varchar(255),
-		last_name varchar(255),
-		email varchar(255),
-		password bytea,
-		token varchar(255),
-		role varchar(10),
-		created_at timestamp,
-		modified_at timestamp
-	)`
+func (s *PostgresStore) GetUser() ([]*User, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 
-	_, err := s.db.Exec(query)
-	return err
+	rows, err := s.db.Query("select * from users")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	users := []*User{}
+	for rows.Next() {
+		user, err := scanIntoUser(rows)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }
 
 func (s *PostgresStore) CreateUser(user *User) (int, error) {
@@ -30,8 +37,8 @@ func (s *PostgresStore) CreateUser(user *User) (int, error) {
 	defer s.mu.Unlock()
 
 	query := `insert into users 
-	(first_name, last_name, email, password, token, role, created_at, modified_at)
-	values ($1, $2, $3, $4, $5, $6, $7, $8)`
+	(first_name, last_name, email, password, token, created_at, modified_at)
+	values ($1, $2, $3, $4, $5, $6, $7)`
 
 	_, err := s.db.Query(
 		query,
@@ -40,7 +47,6 @@ func (s *PostgresStore) CreateUser(user *User) (int, error) {
 		user.Email,
 		user.Password,
 		user.Token,
-		user.Role,
 		user.CreatedAt,
 		user.ModifiedAt,
 	)
@@ -73,7 +79,29 @@ func (s *PostgresStore) CreateUser(user *User) (int, error) {
 }
 
 func (s *PostgresStore) UpdateUser(acc *User) error {
-	return fmt.Errorf("Not implemented")
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	_, err := s.db.Query(`update users set 
+		first_name = $1,
+		last_name = $2,
+		email = $3,
+		password = $4,
+		token = $5,
+		premium = $6,
+		modified_at = $7
+		where id = $8`,
+		acc.FirstName,
+		acc.LastName,
+		acc.Email,
+		acc.Password,
+		acc.Token,
+		acc.Premium,
+		time.Now().UTC(),
+		acc.ID,
+	)
+
+	return err
 }
 
 func (s *PostgresStore) DeleteUser(id int) error {
@@ -82,6 +110,29 @@ func (s *PostgresStore) DeleteUser(id int) error {
 
 	_, err := s.db.Query("delete from users where id = $1", id)
 	return err
+}
+
+func (s *PostgresStore) GetUserProducts(id int) ([]*Product, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	rows, err := s.db.Query("select * from products where user_id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	products := []*Product{}
+	for rows.Next() {
+		product, err := scanIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+
+	return products, nil
 }
 
 func (s *PostgresStore) GetUserByID(id int) (*User, error) {
@@ -99,52 +150,6 @@ func (s *PostgresStore) GetUserByID(id int) (*User, error) {
 		return scanIntoUser(rows)
 	}
 	return nil, fmt.Errorf("User with id %v not found", id)
-}
-
-func (s *PostgresStore) GetUser() ([]*User, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	rows, err := s.db.Query(`select * from users`)
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	users := []*User{}
-	for rows.Next() {
-		user, err := scanIntoUser(rows)
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-
-	return users, nil
-}
-
-func (s *PostgresStore) GetUserProducts(id int) ([]*Product, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	rows, err := s.db.Query("select * from product where user_id = $1", id)
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	products := []*Product{}
-	for rows.Next() {
-		prod, err := scanIntoProduct(rows)
-		if err != nil {
-			return nil, err
-		}
-		products = append(products, prod)
-	}
-
-	return products, nil
 }
 
 func (s *PostgresStore) GetUserByEmail(email string) (*User, error) {
@@ -173,7 +178,7 @@ func scanIntoUser(rows *sql.Rows) (*User, error) {
 		&user.Email,
 		&user.Password,
 		&user.Token,
-		&user.Role,
+		&user.Premium,
 		&user.CreatedAt,
 		&user.ModifiedAt,
 	)

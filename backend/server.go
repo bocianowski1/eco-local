@@ -53,3 +53,7 @@ func MakeHTTPHandler(f HTTPHandler, wp *WorkerPool) http.HandlerFunc {
 		}
 	}
 }
+
+func (s *Server) HealthCheck(w http.ResponseWriter, r *http.Request) error {
+	return WriteJSON(w, http.StatusOK, "OK")
+}

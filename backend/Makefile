@@ -5,4 +5,7 @@ run: build
 	@./bin/backend
 
 test:
-	@go test v ./...
+	@go test -v ./...
+
+apply-infra:
+	@cd terraform && bash apply.sh

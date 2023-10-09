@@ -66,6 +66,20 @@ func (s *Server) HandleGetProduct(w http.ResponseWriter, r *http.Request) error 
 	return WriteJSON(w, http.StatusOK, products)
 }
 
+func (s *Server) HandleUserProducts(w http.ResponseWriter, r *http.Request) error {
+	id, err := getID(r)
+	if err != nil {
+		return err
+	}
+
+	products, err := s.store.GetUserProducts(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, products)
+}
+
 func (s *Server) HandleCreateProduct(w http.ResponseWriter, r *http.Request) error {
 	createProductRequest := &CreateProductRequest{}
 	if err := json.NewDecoder(r.Body).Decode(createProductRequest); err != nil {
@@ -77,7 +91,7 @@ func (s *Server) HandleCreateProduct(w http.ResponseWriter, r *http.Request) err
 		createProductRequest.Title,
 		createProductRequest.Description,
 		createProductRequest.Price,
-		createProductRequest.AccountID,
+		createProductRequest.UserID,
 	)
 
 	if product.Title == "" || product.Description == "" || product.Price < 0 {
