@@ -94,6 +94,22 @@ func (s *PostgresStore) CreateTables() error {
 	if err != nil {
 		return err
 	}
+	_, err = s.db.Exec(`
+		CREATE TABLE IF NOT EXISTS products (
+			id SERIAL PRIMARY KEY,
+			title VARCHAR(255) NOT NULL,
+			description VARCHAR(255) NOT NULL,
+			price DECIMAL NOT NULL,
+			user_id INT NOT NULL REFERENCES users(id),
+
+			created_at TIMESTAMP NOT NULL,
+			modified_at TIMESTAMP NOT NULL
+		);
+	`)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

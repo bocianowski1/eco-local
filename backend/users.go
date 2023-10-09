@@ -106,6 +106,19 @@ func (s *Server) HandleCreateUser(w http.ResponseWriter, r *http.Request) error 
 
 	return WriteJSON(w, http.StatusCreated, updatedUser)
 }
+func (s *Server) HandleUserProducts(w http.ResponseWriter, r *http.Request) error {
+	id, err := getID(r)
+	if err != nil {
+		return err
+	}
+
+	products, err := s.store.GetUserProducts(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, products)
+}
 
 func (s *Server) HandleDeleteUser(w http.ResponseWriter, r *http.Request, id int) error {
 	if err := s.store.DeleteUser(id); err != nil {
