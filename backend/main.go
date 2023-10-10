@@ -25,6 +25,7 @@ func main() {
 		{"/health", MakeHTTPHandler(s.HealthCheck, workerPool)},
 		{"/api/login", MakeHTTPHandler(s.HandleUserLogin, workerPool)},
 		{"/api/users", MakeHTTPHandler(s.HandleUser, workerPool)},
+		{"/api/users/verify", MakeHTTPHandler(s.HandleVerifyUser, workerPool)},
 		{"/api/users/{id}", withJWTAuth(MakeHTTPHandler(s.HandleUserByID, workerPool), s.store)},
 		{"/api/users/{id}/products", withJWTAuth(MakeHTTPHandler(s.HandleUserProducts, workerPool), s.store)},
 		{"/api/products", MakeHTTPHandler(s.HandleProduct, workerPool)},

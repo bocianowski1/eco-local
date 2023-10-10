@@ -26,6 +26,7 @@ type User struct {
 	Password   []byte    `json:"-"`
 	Token      string    `json:"token"`
 	Premium    bool      `json:"premium"`
+	Verified   bool      `json:"verified"`
 	CreatedAt  time.Time `json:"createdAt"`
 	ModifiedAt time.Time `json:"modifiedAt"`
 }
@@ -36,6 +37,8 @@ func NewUser(firstName, lastName, email, password string) *User {
 		LastName:   lastName,
 		Email:      email,
 		Password:   crypto.SHA256.New().Sum([]byte(password)),
+		Premium:    false,
+		Verified:   false,
 		CreatedAt:  time.Now().UTC(),
 		ModifiedAt: time.Now().UTC(),
 	}
@@ -46,6 +49,25 @@ type CreateUserRequest struct {
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
+}
+
+type UpdateUserRequest struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Premium   bool   `json:"premium"`
+	Verified  bool   `json:"verified"`
+}
+
+func UpdateUser(firstName, lastName, email string, premium, verified bool) *User {
+	return &User{
+		FirstName:  firstName,
+		LastName:   lastName,
+		Email:      email,
+		Premium:    premium,
+		Verified:   verified,
+		ModifiedAt: time.Now().UTC(),
+	}
 }
 
 type Business struct {

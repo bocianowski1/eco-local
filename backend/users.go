@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -131,6 +132,37 @@ func (s *Server) HandleDeleteUser(w http.ResponseWriter, r *http.Request, id int
 	return WriteJSON(w, http.StatusOK, map[string]int{
 		"deleted": id,
 	})
+}
+
+func (s *Server) HandleVerifyUser(w http.ResponseWriter, r *http.Request) error {
+	if r.Method != "POST" {
+		return WriteJSON(w, http.StatusMethodNotAllowed, fmt.Sprintf("Method %v not allowed", r.Method))
+	}
+
+	updateUserReq := UpdateUserRequest{}
+	if err := json.NewDecoder(r.Body).Decode(&updateUserReq); err != nil {
+		return err
+	}
+
+	user, err := s.store.GetUserByEmail(updateUserReq.Email)
+	if err != nil {
+		log.Println("Error getting user")
+		return WriteJSON(w, http.StatusBadRequest, HTTPError{
+			StatusCode: http.StatusBadRequest,
+			Message:    fmt.Sprintf("User with email %v not found", updateUserReq.Email),
+		})
+	}
+
+	user.Verified = true
+
+	if err := s.store.UpdateUser(user); err != nil {
+		log.Println("Error updating user", err)
+		return err
+	}
+
+	log.Println("User verified")
+
+	return WriteJSON(w, http.StatusOK, user)
 }
 
 func getID(r *http.Request) (int, error) {

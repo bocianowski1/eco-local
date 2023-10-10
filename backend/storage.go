@@ -86,6 +86,7 @@ func (s *PostgresStore) CreateTables() error {
 			password BYTEA NOT NULL,
 			token VARCHAR(255) NOT NULL,
 			premium BOOLEAN NOT NULL DEFAULT FALSE,
+			verified BOOLEAN NOT NULL DEFAULT FALSE,
 
 			created_at TIMESTAMP NOT NULL,
 			modified_at TIMESTAMP NOT NULL
