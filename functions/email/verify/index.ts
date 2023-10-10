@@ -1,5 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import * as mail from "@sendgrid/mail";
+import { emailContent } from "./content";
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
@@ -38,9 +39,9 @@ const httpTrigger: AzureFunction = async function (
   const message = {
     to: email,
     from: "torgerboc@gmail.com",
-    subject: "Sending with SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+    subject: "Verify your email",
+    // text: "and easy to do anywhere, even with Node.js",
+    html: emailContent(email, name),
   };
 
   try {
