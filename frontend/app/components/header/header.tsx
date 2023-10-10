@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import useAuth from "~/hooks/useAuth";
 import { CartPreview } from "..";
-import HamburgerMenu from "./hamburger";
+import { HamburgerMenu } from "./hamburger";
 import { styles } from "~/common/styles";
 import { CartIcon, ShoppingBagIcon, UserIcon } from "../icons";
 

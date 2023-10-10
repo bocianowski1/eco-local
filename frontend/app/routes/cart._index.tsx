@@ -3,7 +3,7 @@ import type { Product } from "~/common/types";
 import { uniqueProducts, countProducts, kr } from "~/common/utils";
 import useAuth from "~/hooks/useAuth";
 import { AnimatePresence, motion } from "framer-motion";
-import iPhone from "../../public/images/iPhone.png";
+import iPhone from "../../public/images/iphone.png";
 import { MinusIcon, PlusIcon } from "~/components/icons";
 
 export default function Cart() {

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { type Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
-import iPhone from "../../public/images/iPhone.png";
+import iPhone from "../../public/images/iphone.png";
 import { styles } from "~/common/styles";
 import { kr } from "~/common/utils";
 // import { kr } from "~/common/utils";

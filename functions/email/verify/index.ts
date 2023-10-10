@@ -40,7 +40,6 @@ const httpTrigger: AzureFunction = async function (
     to: email,
     from: "torgerboc@gmail.com",
     subject: "Verify your email",
-    // text: "and easy to do anywhere, even with Node.js",
     html: emailContent(email, name),
   };
 

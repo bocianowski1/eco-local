@@ -3,7 +3,7 @@ import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { styles } from "~/common/styles";
 
-export const action = async ({ params, request }: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const body = await request.formData();
 
   if (!body.get("title") || !body.get("description") || !body.get("price")) {

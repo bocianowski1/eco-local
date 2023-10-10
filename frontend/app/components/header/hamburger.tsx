@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link } from "@remix-run/react";
 import { styles } from "~/common/styles";
@@ -19,7 +19,7 @@ const menuItems = [
   },
 ];
 
-const HamburgerMenu: React.FC = () => {
+export function HamburgerMenu() {
   const { user, token } = useAuth() as any;
   const id = user?.id;
 
@@ -171,6 +171,4 @@ const HamburgerMenu: React.FC = () => {
       </motion.div>
     </div>
   );
-};
-
-export default HamburgerMenu;
+}
