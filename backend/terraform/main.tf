@@ -22,3 +22,11 @@ module "db" {
   location    = local.location
   prefix      = var.prefix
 }
+
+module "blob" {
+  source = "./modules/blob"
+
+  rg_name     = azurerm_resource_group.rg.name
+  location    = local.location
+  prefix      = var.prefix
+}
