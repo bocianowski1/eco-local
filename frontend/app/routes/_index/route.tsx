@@ -6,8 +6,8 @@ import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "EcoLocal" },
+    { name: "description", content: "Welcome to EcoLocal!" },
   ];
 };
 export default function Index() {

@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user: User = await response.json();
 
-  response = await fetch("http://localhost:7071/api/verify", {
+  await fetch("http://localhost:7071/api/verify", {
     method: "POST",
     body: JSON.stringify({
       name: `${user.firstName} ${user.lastName}`,
@@ -58,14 +58,14 @@ export const action: ActionFunction = async ({ request }) => {
     }),
   });
 
-  if (response.status !== 202) {
-    throw new Response("Something went wrong", {
-      status: response.status,
-      headers: {
-        "Content-Type": "text/html",
-      },
-    });
-  }
+  // if (response.status !== 202) {
+  //   throw new Response("Something went wrong", {
+  //     status: response.status,
+  //     headers: {
+  //       "Content-Type": "text/html",
+  //     },
+  //   });
+  // }
 
   return redirect(`/users/${user.id}?token=${user.token}`);
 };

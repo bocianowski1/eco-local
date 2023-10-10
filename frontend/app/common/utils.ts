@@ -21,3 +21,8 @@ export const kr = (price: number) => {
     })
     .split(",")[0];
 };
+
+export const verifyEmail = (email: string) => {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};
