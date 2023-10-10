@@ -63,6 +63,12 @@ func (s *PostgresStore) Init() error {
 		return err
 	}
 
+	err = s.Seed()
+	if err != nil {
+		log.Println("Error seeding")
+		return err
+	}
+
 	return nil
 }
 
