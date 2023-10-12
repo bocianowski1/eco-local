@@ -1,0 +1,3 @@
+# version: '3.8'
+
+# TODO: add a service for the email & the recommender service
