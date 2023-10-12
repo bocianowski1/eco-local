@@ -114,21 +114,28 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+const (
+	PHONE = "phone"
+	OTHER = "other"
+)
+
 type Product struct {
 	ID          int       `json:"id"`
 	Title       string    `json:"title"`
 	Price       float64   `json:"price"`
 	Description string    `json:"description"`
+	Category    string    `json:"category"`
 	UserID      int       `json:"userId"`
 	CreatedAt   time.Time `json:"createdAt"`
 	ModifiedAt  time.Time `json:"modifiedAt"`
 }
 
-func NewProduct(title, description string, price float64, userID int) *Product {
+func NewProduct(title, description, category string, price float64, userID int) *Product {
 	return &Product{
 		Title:       title,
 		Price:       price,
 		Description: description,
+		Category:    category,
 		UserID:      userID,
 		CreatedAt:   time.Now().UTC(),
 		ModifiedAt:  time.Now().UTC(),
@@ -138,6 +145,7 @@ func NewProduct(title, description string, price float64, userID int) *Product {
 type CreateProductRequest struct {
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
+	Category    string  `json:"category"`
 	Price       float64 `json:"price"`
 	UserID      int     `json:"userId"`
 }

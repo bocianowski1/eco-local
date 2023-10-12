@@ -20,9 +20,9 @@ func (s *PostgresStore) Seed() error {
 	go func() {
 		defer wg.Done()
 		var products []*Product
-		products = append(products, NewProduct("Macbook Pro", "Really good mac please buy it", 9999, 1))
-		products = append(products, NewProduct("iPhone 15", "The latest iPhone, come on you need that", 14999, 1))
-		products = append(products, NewProduct("Flaske", "Glassflaske av glass som du kan drikke av", 120, 1))
+		products = append(products, NewProduct("Macbook Pro", "Really good mac please buy it", OTHER, 9999, 1))
+		products = append(products, NewProduct("iPhone 15", "The latest iPhone, come on you need that", PHONE, 14999, 1))
+		products = append(products, NewProduct("Flaske", "Glassflaske av glass som du kan drikke av", OTHER, 120, 1))
 
 		for _, product := range products {
 			_, err := s.CreateProduct(product)

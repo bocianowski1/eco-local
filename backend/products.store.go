@@ -13,14 +13,15 @@ func (s *PostgresStore) CreateProduct(prod *Product) (int, error) {
 	defer s.mu.Unlock()
 
 	query := `insert into products 
-	(title, price, description, user_id, created_at, modified_at)
-	values ($1, $2, $3, $4, $5, $6)`
+	(title, price, description, category, user_id, created_at, modified_at)
+	values ($1, $2, $3, $4, $5, $6, $7)`
 
 	_, err := s.db.Query(
 		query,
 		prod.Title,
 		prod.Price,
 		prod.Description,
+		prod.Category,
 		prod.UserID,
 		prod.CreatedAt,
 		prod.ModifiedAt,
@@ -112,6 +113,7 @@ func scanIntoProduct(rows *sql.Rows) (*Product, error) {
 		&prod.Title,
 		&prod.Price,
 		&prod.Description,
+		&prod.Category,
 		&prod.UserID,
 		&prod.CreatedAt,
 		&prod.ModifiedAt,

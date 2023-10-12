@@ -76,6 +76,7 @@ func (s *Server) HandleCreateProduct(w http.ResponseWriter, r *http.Request) err
 	product := NewProduct(
 		createProductRequest.Title,
 		createProductRequest.Description,
+		createProductRequest.Category,
 		createProductRequest.Price,
 		createProductRequest.UserID,
 	)
