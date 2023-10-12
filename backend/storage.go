@@ -24,6 +24,10 @@ type Storager interface {
 	DeleteProduct(int) error
 	GetProduct() ([]*Product, error)
 	GetProductByID(int) (*Product, error)
+
+	// Analytics
+	GetPageViews() ([]*PageView, error)
+	CreatePageView(*PageView) (int, error)
 }
 
 type PostgresStore struct {
@@ -76,6 +80,7 @@ func (s *PostgresStore) DropAllTables() error {
 	_, err := s.db.Exec(`
 		DROP TABLE IF EXISTS users CASCADE;
 		DROP TABLE IF EXISTS products CASCADE;
+		DROP TABLE IF EXISTS page_views CASCADE;
 	`)
 
 	return err
@@ -108,10 +113,25 @@ func (s *PostgresStore) CreateTables() error {
 			title VARCHAR(255) NOT NULL,
 			price DECIMAL NOT NULL,
 			description VARCHAR(255) NOT NULL,
+			category VARCHAR(255) NOT NULL,
 			user_id INT NOT NULL,
 
 			created_at TIMESTAMP NOT NULL,
 			modified_at TIMESTAMP NOT NULL
+		);
+	`)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = s.db.Exec(`
+		CREATE TABLE IF NOT EXISTS page_views (
+			id SERIAL PRIMARY KEY,
+			product_id INT NOT NULL,
+			user_id INT NOT NULL,
+
+			created_at TIMESTAMP NOT NULL
 		);
 	`)
 
@@ -133,7 +153,7 @@ func connectionString() string {
 
 	if host == "" || port == "" || user == "" || password == "" || dbname == "" {
 		log.Println("Missing required environment variables")
-		return "user=postgres dbname=db password=postgres host=host.docker.internal sslmode=disable"
+		return "user=postgres dbname=db password=postgres host=host.docker.internal port=5432 sslmode=disable"
 	}
 	return fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", user, dbname, password, host, port)
 

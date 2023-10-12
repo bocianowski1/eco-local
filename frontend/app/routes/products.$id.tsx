@@ -1,14 +1,20 @@
 import { redirect, json } from "@remix-run/node";
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, useLoaderData, useParams } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useLocation,
+  useMatches,
+  useParams,
+} from "@remix-run/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
 import iPhone from "../../public/images/iphone.png";
 import { styles } from "~/common/styles";
 import { kr } from "~/common/utils";
-// import { kr } from "~/common/utils";
 
 export const action: ActionFunction = async ({ request }) => {
   const id = request.url.split("/").pop();
@@ -60,6 +66,36 @@ export default function ProductsID() {
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth() as any;
   const { editCart, cart } = useAuth();
+
+  const [lastLocation, setLastLocation] = useState("");
+  let location = useLocation();
+  const matches = useMatches();
+
+  useEffect(() => {
+    if (lastLocation == location.pathname) {
+      return;
+    }
+    // there are multiple matches for parent route + root route, this
+    // will give us the leaf route
+    const routeMatch = matches.find((m) => m.pathname == location.pathname);
+    setLastLocation(location.pathname);
+    console.log("reporting pageview", {
+      url: location.pathname,
+      route: routeMatch?.id,
+    });
+    //  fetch("/api/pageview", {
+    //    body: JSON.stringify({
+    //      url: location.pathname,
+    //      // routeMatch.id looks like: "/routes/email/$emailId"
+    //      route: routeMatch?.id,
+    //    }),
+    //    method: "POST",
+    //  }).then((res) => {
+    //    if (res.status != 200) {
+    //      console.error("could not report pageview:", res);
+    //    }
+    //  });
+  }, [location, matches, lastLocation]);
 
   return (
     <div className="flex flex-col gap-12 pb-12">

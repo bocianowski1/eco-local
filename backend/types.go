@@ -149,3 +149,23 @@ type CreateProductRequest struct {
 	Price       float64 `json:"price"`
 	UserID      int     `json:"userId"`
 }
+
+type PageView struct {
+	ID        int       `json:"id"`
+	ProductID int       `json:"productId"`
+	UserID    int       `json:"userId"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+func NewPageView(productID, userID int) *PageView {
+	return &PageView{
+		ProductID: productID,
+		UserID:    userID,
+		CreatedAt: time.Now().UTC(),
+	}
+}
+
+type CreatePageViewRequest struct {
+	ProductID int `json:"productId"`
+	UserID    int `json:"userId"`
+}
