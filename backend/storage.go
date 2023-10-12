@@ -119,18 +119,6 @@ func (s *PostgresStore) CreateTables() error {
 		return err
 	}
 
-	_, err = s.db.Exec(`
-		CREATE TABLE product_images (
-			id SERIAL PRIMARY KEY,
-			product_id INT REFERENCES products(id),
-			image_key VARCHAR(255)
-		);
-	`)
-
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
