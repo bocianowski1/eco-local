@@ -14,9 +14,11 @@ func (s *PostgresStore) CreateProduct(prod *Product) (int, error) {
 
 	query := `insert into products 
 	(title, price, description, category, user_id, created_at, modified_at)
-	values ($1, $2, $3, $4, $5, $6, $7)`
+	values ($1, $2, $3, $4, $5, $6, $7)
+	returning id`
 
-	_, err := s.db.Query(
+	var id int
+	err := s.db.QueryRow(
 		query,
 		prod.Title,
 		prod.Price,
@@ -25,33 +27,14 @@ func (s *PostgresStore) CreateProduct(prod *Product) (int, error) {
 		prod.UserID,
 		prod.CreatedAt,
 		prod.ModifiedAt,
-	)
+	).Scan(&id)
 
 	if err != nil {
 		log.Println("Error creating product:", err)
 		return 0, err
 	}
 
-	rows, err := s.db.Query("select id from products where title = $1", prod.Title)
-	if err != nil {
-		return 0, err
-	}
-
-	defer rows.Close()
-
-	i := 0
-	for rows.Next() {
-		i++
-		var id int
-		err := rows.Scan(&id)
-		if err != nil {
-			return 0, err
-		}
-
-		return id, nil
-	}
-
-	return 0, fmt.Errorf("Product with title %v not found", prod.Title)
+	return id, nil
 }
 
 func (s *PostgresStore) UpdateProduct(prod *Product) error {

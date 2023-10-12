@@ -31,9 +31,9 @@ func (s *PostgresStore) CreatePageView(pageView *PageView) (int, error) {
 
 	var id int
 	err := s.db.QueryRow(`
-        INSERT INTO page_views (product_id, user_id, created_at)
-        VALUES ($1, $2, $3)
-        RETURNING id
+        insert into page_views (product_id, user_id, created_at)
+        values ($1, $2, $3)
+        returning id
     `, pageView.ProductID, pageView.UserID, pageView.CreatedAt).Scan(&id)
 
 	if err != nil {

@@ -51,9 +51,11 @@ func (s *PostgresStore) CreateUser(user *User) (int, error) {
 
 	query := `insert into users 
 	(first_name, last_name, email, password, token, premium, verified, created_at, modified_at)
-	values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+	values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	returning id`
 
-	_, err = s.db.Query(
+	var id int
+	err = s.db.QueryRow(
 		query,
 		user.FirstName,
 		user.LastName,
@@ -64,33 +66,14 @@ func (s *PostgresStore) CreateUser(user *User) (int, error) {
 		user.Verified,
 		user.CreatedAt,
 		user.ModifiedAt,
-	)
+	).Scan(&id)
 
 	if err != nil {
 		log.Println("Error creating user:", err)
 		return 0, err
 	}
 
-	rows, err := s.db.Query("select id from users where email = $1", user.Email)
-	if err != nil {
-		return 0, err
-	}
-
-	defer rows.Close()
-
-	i := 0
-	for rows.Next() {
-		i++
-		var id int
-		err := rows.Scan(&id)
-		if err != nil {
-			return 0, err
-		}
-
-		return id, nil
-	}
-
-	return 0, fmt.Errorf("User with email %v not found", user.Email)
+	return id, nil
 }
 
 func (s *PostgresStore) UpdateUser(user *User) error {
