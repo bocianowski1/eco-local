@@ -33,7 +33,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   if (userId) {
     try {
-      response = await fetch(`http://localhost:8080/api/analytics`, {
+      response = await fetch(`http://localhost:8080/api/analytics/pageviews`, {
         method: "POST",
         body: JSON.stringify({
           productId: Number(params.id),

@@ -28,6 +28,8 @@ type Storager interface {
 	// Analytics
 	GetPageViews() ([]*PageView, error)
 	CreatePageView(*PageView) (int, error)
+	GetReviews() ([]*Review, error)
+	CreateReview(*Review) (int, error)
 }
 
 type PostgresStore struct {

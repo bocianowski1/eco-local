@@ -169,3 +169,37 @@ type CreatePageViewRequest struct {
 	ProductID int `json:"productId"`
 	UserID    int `json:"userId"`
 }
+
+type Review struct {
+	ID        int       `json:"id"`
+	ProductID int       `json:"productId"`
+	UserID    int       `json:"userId"`
+	Comment   string    `json:"comment"`
+	Rating    int       `json:"rating"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+func NewReview(productID, userID int, comment string, rating int) *Review {
+	if rating < 1 {
+		rating = 1
+	}
+
+	if rating > 5 {
+		rating = 5
+	}
+
+	return &Review{
+		ProductID: productID,
+		UserID:    userID,
+		Comment:   comment,
+		Rating:    rating,
+		CreatedAt: time.Now().UTC(),
+	}
+}
+
+type CreateReviewRequest struct {
+	ProductID int    `json:"productId"`
+	UserID    int    `json:"userId"`
+	Comment   string `json:"comment"`
+	Rating    int    `json:"rating"`
+}

@@ -30,7 +30,8 @@ func main() {
 		{"/api/users/{id}/products", withJWTAuth(MakeHTTPHandler(s.HandleUserProducts, workerPool), s.store)},
 		{"/api/products", MakeHTTPHandler(s.HandleProduct, workerPool)},
 		{"/api/products/{id}", MakeHTTPHandler(s.HandleProductByID, workerPool)},
-		{"/api/analytics", MakeHTTPHandler(s.HandlePageViews, workerPool)},
+		{"/api/analytics/pageviews", MakeHTTPHandler(s.HandlePageviews, workerPool)},
+		{"/api/analytics/reviews", MakeHTTPHandler(s.HandleReviews, workerPool)},
 	}
 
 	for _, route := range routes {
