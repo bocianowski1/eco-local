@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -63,7 +62,7 @@ func (s *PostgresStore) GetProductByID(id int) (*Product, error) {
 	for rows.Next() {
 		return scanIntoProduct(rows)
 	}
-	return nil, fmt.Errorf("Product with id %v not found", id)
+	return nil, sql.ErrNoRows
 }
 
 func (s *PostgresStore) GetProduct() ([]*Product, error) {

@@ -28,8 +28,11 @@ func main() {
 		{"/api/users/verify", MakeHTTPHandler(s.HandleVerifyUser, workerPool)},
 		{"/api/users/{id}", withJWTAuth(MakeHTTPHandler(s.HandleUserByID, workerPool), s.store)},
 		{"/api/users/{id}/products", withJWTAuth(MakeHTTPHandler(s.HandleUserProducts, workerPool), s.store)},
+
 		{"/api/products", MakeHTTPHandler(s.HandleProduct, workerPool)},
 		{"/api/products/{id}", MakeHTTPHandler(s.HandleProductByID, workerPool)},
+		{"/api/products/{id}/pageviews", MakeHTTPHandler(s.HandleProductPageviews, workerPool)},
+
 		{"/api/analytics/pageviews", MakeHTTPHandler(s.HandlePageviews, workerPool)},
 		{"/api/analytics/reviews", MakeHTTPHandler(s.HandleReviews, workerPool)},
 	}

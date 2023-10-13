@@ -28,6 +28,7 @@ type Storager interface {
 	// Analytics
 	GetPageViews() ([]*PageView, error)
 	CreatePageView(*PageView) (int, error)
+	GetPageviewsForProduct(int) (int, error)
 	GetReviews() ([]*Review, error)
 	CreateReview(*Review) (int, error)
 }

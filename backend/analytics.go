@@ -23,6 +23,32 @@ func (s *Server) HandlePageviews(w http.ResponseWriter, r *http.Request) error {
 	}
 }
 
+func (s *Server) HandleProductPageviews(w http.ResponseWriter, r *http.Request) error {
+	productID, err := getID(r)
+	if err != nil {
+		return err
+	}
+
+	switch r.Method {
+	case "GET":
+		{
+			count, err := s.store.GetPageviewsForProduct(productID)
+			if err != nil {
+				return err
+			}
+
+			return WriteJSON(w, http.StatusOK, map[string]interface{}{
+				"product_id": productID,
+				"count":      count,
+			})
+		}
+	default:
+		{
+			return WriteJSON(w, http.StatusMethodNotAllowed, fmt.Sprintf("Method %v not allowed", r.Method))
+		}
+	}
+}
+
 func (s *Server) HandleGetPageviews(w http.ResponseWriter, r *http.Request) error {
 	pageViews, err := s.store.GetPageViews()
 	if err != nil {
