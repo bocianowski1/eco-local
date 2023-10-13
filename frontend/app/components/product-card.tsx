@@ -5,7 +5,7 @@ import useAuth from "~/hooks/useAuth";
 import { kr } from "~/common/utils";
 
 export function ProductCard({ product }: { product: Product }) {
-  const { editCart } = useAuth();
+  const { editCart, user } = useAuth();
   return (
     <div className="relative flex flex-col rounded-sm border border-white/80 group">
       <button
@@ -15,7 +15,7 @@ export function ProductCard({ product }: { product: Product }) {
       >
         +
       </button>
-      <Link to={`/products/${product.id}`}>
+      <Link to={`/products/${product.id}?userId=${user?.id}`}>
         <div className="w-full h-96">
           <img
             src={iPhone}

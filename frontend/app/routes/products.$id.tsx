@@ -1,15 +1,8 @@
 import { redirect, json } from "@remix-run/node";
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useLoaderData,
-  useLocation,
-  useMatches,
-  useParams,
-} from "@remix-run/react";
+import { Form, Link, useLoaderData, useParams } from "@remix-run/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { type Product } from "~/common/types";
 import useAuth from "~/hooks/useAuth";
 import iPhone from "../../public/images/iphone.png";
@@ -34,68 +27,71 @@ export const action: ActionFunction = async ({ request }) => {
   return redirect("/products");
 };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const response = await fetch(
-    `http://localhost:8080/api/products/${params.id}`
-  );
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  let response;
+  const userId = request.url.split("?userId=")[1];
 
-  if (response.status === 404) {
-    return new Response("No product found", {
-      status: response.status,
-      headers: {
-        "Content-Type": "text/html",
-      },
-    });
+  if (userId) {
+    try {
+      response = await fetch(`http://localhost:8080/api/analytics`, {
+        method: "POST",
+        body: JSON.stringify({
+          productId: Number(params.id),
+          userId: Number(userId),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status != 200) {
+        console.error("could not report pageview:", response);
+      }
+    } catch (error) {
+      console.error("could not report pageview:", error);
+    }
   }
 
-  if (response.status === 500) {
+  try {
+    response = await fetch(`http://localhost:8080/api/products/${params.id}`);
+
+    if (response.status === 404) {
+      return new Response("No product found", {
+        status: response.status,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      });
+    }
+
+    if (response.status === 500) {
+      return new Response("Something went wrong", {
+        status: response.status,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      });
+    }
+
+    const product = await response.json();
+
+    return json({ product });
+  } catch (error) {
     return new Response("Something went wrong", {
-      status: response.status,
+      status: 500,
       headers: {
         "Content-Type": "text/html",
       },
     });
   }
-
-  return json(await response.json());
 };
 
 export default function ProductsID() {
   const { id } = useParams();
-  const product: Product = useLoaderData<typeof loader>();
+  const { product } = useLoaderData<typeof loader>();
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth() as any;
   const { editCart, cart } = useAuth();
-
-  const [lastLocation, setLastLocation] = useState("");
-  let location = useLocation();
-  const matches = useMatches();
-
-  useEffect(() => {
-    if (lastLocation == location.pathname) {
-      return;
-    }
-    // there are multiple matches for parent route + root route, this
-    // will give us the leaf route
-    const routeMatch = matches.find((m) => m.pathname == location.pathname);
-    setLastLocation(location.pathname);
-    console.log("reporting pageview", {
-      url: location.pathname,
-      route: routeMatch?.id,
-    });
-    //  fetch("/api/pageview", {
-    //    body: JSON.stringify({
-    //      url: location.pathname,
-    //      // routeMatch.id looks like: "/routes/email/$emailId"
-    //      route: routeMatch?.id,
-    //    }),
-    //    method: "POST",
-    //  }).then((res) => {
-    //    if (res.status != 200) {
-    //      console.error("could not report pageview:", res);
-    //    }
-    //  });
-  }, [location, matches, lastLocation]);
 
   return (
     <div className="flex flex-col gap-12 pb-12">

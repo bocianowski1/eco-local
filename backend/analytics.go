@@ -45,7 +45,7 @@ func (s *Server) HandleCreatePageView(w http.ResponseWriter, r *http.Request) er
 		return err
 	}
 
-	return WriteJSON(w, http.StatusCreated, map[string]int{
+	return WriteJSON(w, http.StatusOK, map[string]int{
 		"id": id,
 	})
 }

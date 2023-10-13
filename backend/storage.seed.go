@@ -11,7 +11,13 @@ func (s *PostgresStore) Seed() error {
 	go func() {
 		defer wg.Done()
 		user := NewUser("Test", "User", "test@user.com", "hei")
-		_, err := s.CreateUser(user)
+		token, err := createJWT(user)
+		if err != nil {
+			log.Println("Error creating JWT:", err)
+		}
+
+		user.Token = token
+		_, err = s.CreateUser(user)
 		if err != nil {
 			log.Println(err)
 		}

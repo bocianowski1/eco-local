@@ -2,8 +2,10 @@ import { Link } from "@remix-run/react";
 import { styles } from "~/common/styles";
 import type { Cart, Product } from "~/common/types";
 import { countProducts, uniqueProducts } from "~/common/utils";
+import useAuth from "~/hooks/useAuth";
 
 export function CartPreview({ cart }: { cart: Cart }) {
+  const { user } = useAuth();
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
@@ -21,7 +23,7 @@ export function CartPreview({ cart }: { cart: Cart }) {
         <div className="flex flex-col gap-4 py-4 mb-1 border-y border-black/80">
           {uniqueProducts(cart).map((p: Product) => (
             <Link
-              to={`/products/${p.id}`}
+              to={`/products/${p.id}?userId=${user?.id}`}
               key={p.id}
               className="flex justify-between hover:text-accent hover:underline transition-all duration-200"
             >

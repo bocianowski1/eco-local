@@ -35,19 +35,6 @@ export const action: ActionFunction = async ({ request }) => {
   return redirect(`/users/${user.id}?token=${user.token}`);
 };
 
-// function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-//   event.preventDefault();
-//   const emailInput = document.querySelector("input[name='email']");
-//   const passwordInput = document.querySelector("input[name='password']");
-
-//   if (!emailInput || !passwordInput) {
-//     alert("Something went wrong");
-//     return;
-//   }
-
-//   console.log(emailInput, passwordInput, typeof emailInput);
-// }
-
 export default function Login() {
   return (
     <div>
@@ -57,7 +44,6 @@ export default function Login() {
           action="/login"
           method="POST"
           className="flex flex-col gap-8 text-black"
-          // onSubmit={(e) => handleSubmit(e)}
         >
           <input
             type="email"

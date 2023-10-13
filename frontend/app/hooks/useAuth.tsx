@@ -31,6 +31,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (account && token) {
       setUser(JSON.parse(account));
       setToken(token);
+    } else {
+      setUser(null);
+      setToken("");
     }
 
     if (cartFromLocalStorage) {

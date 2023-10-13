@@ -112,11 +112,6 @@ export default function AccountsID() {
   const [showSettings, setShowSettings] = useState(false);
   const { setUser, setToken, signOut } = useAuth();
 
-  // const urlId = window.location.pathname.split("/")[2];
-  // if (urlId !== account.id) {
-  //   return redirect(`/users/${account.id}?token=${account.token}`);
-  // }
-
   useEffect(() => {
     setUser(account);
     setToken(account.token);

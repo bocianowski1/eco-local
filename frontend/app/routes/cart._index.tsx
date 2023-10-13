@@ -7,7 +7,8 @@ import iPhone from "../../public/images/iphone.png";
 import { MinusIcon, PlusIcon } from "~/components/icons";
 
 export default function Cart() {
-  const { cart, editCart, removeEveryInstanceFromCart, totalPrice } = useAuth();
+  const { user, cart, editCart, removeEveryInstanceFromCart, totalPrice } =
+    useAuth();
 
   return (
     <div className="flex flex-col gap-12 pb-12">
@@ -54,7 +55,9 @@ export default function Cart() {
                   </div>
                   <div className="flex flex-col items-start">
                     <h3 className="font-medium text-xl hover:text-primary transition-colors duration-500">
-                      <Link to={`/products/${p.id}`}>{p.title}</Link>
+                      <Link to={`/products/${p.id}?userId=${user?.id}`}>
+                        {p.title}
+                      </Link>
                     </h3>
                     <p className="text-sm font-light">{p.description}</p>
                     <button
