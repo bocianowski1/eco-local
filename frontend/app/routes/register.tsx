@@ -52,17 +52,17 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user: User = await response.json();
 
-  try {
-    await fetch("http://localhost:7071/api/verify", {
-      method: "POST",
-      body: JSON.stringify({
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email,
-      }),
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  // try {
+  //   response = await fetch("http://localhost:7071/api/verify", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       name: `${user.firstName} ${user.lastName}`,
+  //       email: user.email,
+  //     }),
+  //   });
+  // } catch (error) {
+  //   console.error(error);
+  // }
 
   // if (response.status !== 202) {
   //   throw new Response("Something went wrong", {

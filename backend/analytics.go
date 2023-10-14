@@ -32,14 +32,15 @@ func (s *Server) HandleProductPageviews(w http.ResponseWriter, r *http.Request) 
 	switch r.Method {
 	case "GET":
 		{
-			count, err := s.store.GetPageviewsForProduct(productID)
+			userIdList, err := s.store.GetPageviewsForProduct(productID)
 			if err != nil {
 				return err
 			}
 
 			return WriteJSON(w, http.StatusOK, map[string]interface{}{
 				"product_id": productID,
-				"count":      count,
+				"count":      len(userIdList),
+				"user_ids":   userIdList,
 			})
 		}
 	default:

@@ -115,7 +115,7 @@ export default function Cart() {
               <p>{kr(totalPrice(cart))}</p>
             </div>
             <Link
-              to="/cart/checkout"
+              to={`/cart/checkout?numProducts=${cart.products.length}`}
               className="font-medium text-lg w-full flex justify-center py-3 rounded-sm
             bg-primary text-white hover:bg-accent transition-colors duration-200"
             >

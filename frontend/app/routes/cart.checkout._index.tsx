@@ -1,12 +1,24 @@
-import { Link } from "@remix-run/react";
+import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
+import { Form, Link } from "@remix-run/react";
 import { uniqueProducts } from "~/common/utils";
 import useAuth from "~/hooks/useAuth";
 
+export const action = async () => {
+  return redirect("/cart/checkout/complete");
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  let numProducts = request.url.split("?numProducts=")[1];
+
+  if (!numProducts || isNaN(Number(numProducts)) || Number(numProducts) < 1) {
+    return redirect("/products");
+  }
+
+  return json({ numProducts });
+};
+
 export default function Checkout() {
   const { cart } = useAuth();
-  if (!cart || (cart && cart.products.length === 0)) {
-    return <div>No cart</div>;
-  }
 
   return (
     <div className="flex flex-col gap-12 pb-12">
@@ -20,15 +32,6 @@ export default function Checkout() {
               Check out the products page!
             </Link>
           </div>
-        )}
-
-        {cart && (
-          <section
-            // style={{
-            //   height: `${uniqueProducts(cart).length * 12}rem`,
-            // }}
-            className="relative flex flex-col justify-end pb-4 transition-all duration-300 z-50 overflow-y-hidden"
-          ></section>
         )}
       </div>
       {cart.products.length > 0 && (
@@ -52,12 +55,14 @@ export default function Checkout() {
             <div className="flex justify-between font-bold text-lg py-4 border-t border-black/80">
               <p className="">Total (VAT included)</p>
             </div>
-            <button
-              className="font-medium text-lg w-full flex justify-center py-3 rounded-sm
-            bg-primary text-white hover:bg-accent transition-colors duration-200"
-            >
-              Complete order
-            </button>
+            <Form action="/cart/checkout" method="POST">
+              <button
+                className="font-medium text-lg w-full flex justify-center py-3 rounded-sm
+                      bg-primary text-white hover:bg-accent transition-colors duration-200"
+              >
+                Complete order
+              </button>
+            </Form>
           </div>
         </div>
       )}

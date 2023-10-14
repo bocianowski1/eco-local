@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"log"
 )
 
 func (s *PostgresStore) GetPageViews() ([]*PageView, error) {
@@ -46,20 +45,28 @@ func (s *PostgresStore) CreatePageView(pageView *PageView) (int, error) {
 	return id, nil
 }
 
-func (s *PostgresStore) GetPageviewsForProduct(id int) (int, error) {
+func (s *PostgresStore) GetPageviewsForProduct(id int) ([]int, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	row := s.db.QueryRow("select count(*) from page_views where product_id = $1", id)
-
-	var count int
-	err := row.Scan(&count)
+	var userIdList []int
+	rows, err := s.db.Query("select user_id from page_views where product_id = $1", id)
 	if err != nil {
-		log.Println("Error scanning row", err)
-		return 0, err
+		return nil, err
 	}
 
-	return count, nil
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID int
+		err := rows.Scan(&userID)
+		if err != nil {
+			return nil, err
+		}
+		userIdList = append(userIdList, userID)
+	}
+
+	return userIdList, nil
 }
 
 func scanIntoPageView(rows *sql.Rows) (*PageView, error) {
